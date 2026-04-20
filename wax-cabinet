@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wax Cabinet — Case Study</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #5f5e5a;
+  --color-text-tertiary: #888780;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f7f6f2;
+  --color-border-tertiary: rgba(0,0,0,0.12);
+  --color-border-secondary: rgba(0,0,0,0.25);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--color-text-primary);
+  background: #fafaf8;
+  padding: 3rem 2rem;
+  line-height: 1.6;
+}
+.cs-wrap { max-width: 780px; margin: 0 auto; padding: 2.5rem 0 3rem; }
+.cs-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 1rem; }
+.cs-title { font-family: 'DM Serif Display', serif; font-size: 38px; font-weight: 400; line-height: 1.15; margin-bottom: 0.5rem; }
+.cs-title em { font-style: italic; color: #B4B2A9; }
+.cs-tagline { font-size: 17px; font-weight: 300; color: var(--color-text-secondary); margin-bottom: 2rem; line-height: 1.5; }
+.cs-divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+.cs-meta-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--color-border-tertiary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 2.5rem; }
+.cs-meta-cell { background: var(--color-background-primary); padding: 1.25rem 1.5rem; }
+.cs-meta-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 6px; }
+.cs-meta-value { font-size: 14px; color: var(--color-text-primary); line-height: 1.5; }
+.cs-section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.75rem; }
+.cs-body { font-size: 15px; font-weight: 300; line-height: 1.8; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+.cs-body strong { font-weight: 500; color: var(--color-text-primary); }
+.cs-blockquote { border-left: 2px solid var(--color-border-secondary); padding: 0.5rem 0 0.5rem 1.5rem; margin: 2rem 0; }
+.cs-blockquote p { font-family: 'DM Serif Display', serif; font-size: 20px; font-style: italic; color: var(--color-text-primary); line-height: 1.5; }
+.cs-deliverable-list { list-style: none; margin: 1rem 0 1.5rem; display: flex; flex-direction: column; gap: 10px; }
+.cs-deliverable-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; }
+.cs-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-text-tertiary); flex-shrink: 0; margin-top: 8px; }
+.cs-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 2rem 0; }
+.cs-metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1.25rem 1rem; text-align: center; }
+.cs-metric-num { font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400; color: var(--color-text-primary); line-height: 1; margin-bottom: 6px; }
+.cs-metric-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; }
+.import-flow { margin: 1.5rem 0 2rem; display: flex; flex-direction: column; }
+.flow-step { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.flow-step:last-child { border-bottom: none; }
+.flow-num { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); min-width: 20px; padding-top: 2px; }
+.flow-content { flex: 1; }
+.flow-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.flow-detail { font-size: 12px; font-weight: 300; color: var(--color-text-secondary); line-height: 1.5; }
+.flow-badge { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 3px; display: inline-block; margin-left: 8px; vertical-align: middle; }
+.highlight-box { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+.highlight-box p { font-size: 14px; font-weight: 300; color: var(--color-text-secondary); line-height: 1.7; }
+.highlight-box strong { font-weight: 500; color: var(--color-text-primary); }
+.cs-stack { display: flex; flex-wrap: wrap; gap: 8px; margin: 1.25rem 0 1.5rem; }
+.cs-stack-pill { font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; gap: 6px; }
+.pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.p-fe  { background: #EEEDFE; border-color: #AFA9EC; color: #3C3489; }
+.p-fe .pill-dot { background: #7F77DD; }
+.p-db  { background: #E1F5EE; border-color: #9FE1CB; color: #085041; }
+.p-db .pill-dot { background: #1D9E75; }
+.p-ai  { background: #FAEEDA; border-color: #FAC775; color: #854F0B; }
+.p-ai .pill-dot { background: #BA7517; }
+.p-inf { background: #E6F1FB; border-color: #B5D4F4; color: #185FA5; }
+.p-inf .pill-dot { background: #378ADD; }
+.cs-tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.5rem; }
+.cs-tag { font-size: 12px; color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 4px 12px; }
+</style>
+</head>
+<body>
+<div class="cs-wrap">
+  <p class="cs-eyebrow">Personal Project — Self-Initiated</p>
+  <h1 class="cs-title"><em>Wax Cabinet</em> —<br>An AI-Powered Vinyl Tracker</h1>
+  <p class="cs-tagline">A full-stack web app built in a single session with zero prior Next.js experience —<br>photo import, AI cover recognition, Discogs data, and a live collection value tracker.</p>
+
+  <div class="cs-meta-grid">
+    <div class="cs-meta-cell">
+      <p class="cs-meta-label">Project type</p>
+      <p class="cs-meta-value">Personal App — Full Stack</p>
+    </div>
+    <div class="cs-meta-cell">
+      <p class="cs-meta-label">Build time</p>
+      <p class="cs-meta-value">Single session</p>
+    </div>
+    <div class="cs-meta-cell">
+      <p class="cs-meta-label">Prior experience</p>
+      <p class="cs-meta-value">Zero Next.js experience</p>
+    </div>
+  </div>
+
+  <p class="cs-section-label">The problem</p>
+  <p class="cs-body">
+    Vinyl collecting has a well-known hazard: you're at a record store, you spot something familiar, you buy it — and it's already on your shelf. With a collection that grows faster than memory, the only reliable defense is having your catalog in your pocket. Existing tools like Discogs are powerful but built for trading and marketplace activity. <strong>I wanted something personal, fast, and purpose-built for one question: do I already own this?</strong>
+  </p>
+
+  <div class="cs-blockquote">
+    <p>"I didn't need a marketplace. I needed to point my phone at a record and know in three seconds if it was already home."</p>
+  </div>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">What makes it different</p>
+  <p class="cs-body">
+    Rather than manual entry or barcode scanning, Wax Cabinet uses <strong>AI vision to read album covers from photos</strong>. Drag and drop a photo of any record — Claude or Gemini identifies the artist, title, year, genre, and label automatically, then cross-references Discogs to match the exact pressing and pull market value. The whole import flow takes seconds.
+  </p>
+
+  <div class="highlight-box">
+    <p><strong>Model toggle:</strong> The app lets you switch between Claude (Anthropic) and Gemini (Google) for cover identification — a practical comparison of how two frontier vision models handle the same task, baked into the product itself.</p>
+  </div>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">Import flow</p>
+  <div class="import-flow">
+    <div class="flow-step">
+      <span class="flow-num">01</span>
+      <div class="flow-content">
+        <p class="flow-title">Photo upload <span class="flow-badge" style="background:#FAEEDA;color:#854F0B;">AI</span></p>
+        <p class="flow-detail">Drag and drop or file picker. Image resized client-side to 800px via Canvas API before sending.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">02</span>
+      <div class="flow-content">
+        <p class="flow-title">Cover identification <span class="flow-badge" style="background:#FAEEDA;color:#854F0B;">Claude / Gemini</span></p>
+        <p class="flow-detail">AI vision reads the cover and returns artist, title, year, genre, and label. User can toggle between models.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">03</span>
+      <div class="flow-content">
+        <p class="flow-title">Discogs match <span class="flow-badge" style="background:#E6F1FB;color:#185FA5;">API</span></p>
+        <p class="flow-detail">Auto-search Discogs using identified artist and title. Up to 4 pressing matches shown with full release details.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">04</span>
+      <div class="flow-content">
+        <p class="flow-title">Pressing selection</p>
+        <p class="flow-detail">User selects the correct pressing. Tracklist, label, and current market value pulled automatically.</p>
+      </div>
+    </div>
+    <div class="flow-step">
+      <span class="flow-num">05</span>
+      <div class="flow-content">
+        <p class="flow-title">Save to collection <span class="flow-badge" style="background:#E1F5EE;color:#085041;">Supabase</span></p>
+        <p class="flow-detail">Album art uploaded to Supabase Storage. Record saved to Postgres. Collection grid updates instantly.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">Features shipped</p>
+  <ul class="cs-deliverable-list">
+    <li><span class="cs-dot"></span><span><strong>AI photo import</strong> — Drag and drop any album cover photo; Claude or Gemini auto-fills all metadata fields. No typing required.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Discogs integration</strong> — Automatic pressing search after AI identification, with tracklist and live market value pulled per release.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Estimated collection value</strong> — A running total of market values across every record in the collection, displayed in the app header.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Searchable collection grid</strong> — Filter and search by artist, genre, or free text across the full catalog.</span></li>
+    <li><span class="cs-dot"></span><span><strong>PWA support</strong> — Installable on iPhone and Android as a home screen app via Safari share sheet.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Secure API proxy layer</strong> — Next.js API routes keep all third-party keys (Anthropic, Gemini, Discogs) server-side and out of the browser entirely.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Retro aesthetic</strong> — Aged paper background, Special Elite typewriter font, SVG noise texture, and ledger-rule grid lines throughout.</span></li>
+  </ul>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">Tech stack</p>
+  <div class="cs-stack">
+    <span class="cs-stack-pill p-fe"><span class="pill-dot"></span>Next.js — frontend & API routes</span>
+    <span class="cs-stack-pill p-db"><span class="pill-dot"></span>Supabase — Postgres + storage</span>
+    <span class="cs-stack-pill p-ai"><span class="pill-dot"></span>Claude Vision — cover identification</span>
+    <span class="cs-stack-pill p-ai"><span class="pill-dot"></span>Gemini Vision — alternative model</span>
+    <span class="cs-stack-pill p-inf"><span class="pill-dot"></span>Discogs API — release data & value</span>
+    <span class="cs-stack-pill p-inf"><span class="pill-dot"></span>Vercel — hosting & deploys</span>
+  </div>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">What this project demonstrates</p>
+  <p class="cs-body">
+    Wax Cabinet was built in a single session with no prior Next.js experience — from blank folder to live deployed app. The build required learning environment variable management, Supabase row-level security, API proxying, PWA configuration, and multi-model AI integration in real time. <strong>Every bug was encountered, diagnosed, and fixed within the session.</strong> The result is a production-deployed app used daily, not a prototype.
+  </p>
+
+  <div class="cs-metrics">
+    <div class="cs-metric">
+      <p class="cs-metric-num">1</p>
+      <p class="cs-metric-desc">Session to go from zero to deployed</p>
+    </div>
+    <div class="cs-metric">
+      <p class="cs-metric-num">2</p>
+      <p class="cs-metric-desc">AI vision models integrated and toggleable</p>
+    </div>
+    <div class="cs-metric">
+      <p class="cs-metric-num">5+</p>
+      <p class="cs-metric-desc">Third-party APIs and services connected</p>
+    </div>
+  </div>
+
+  <div class="cs-tag-row">
+    <span class="cs-tag">Next.js</span>
+    <span class="cs-tag">Supabase</span>
+    <span class="cs-tag">Claude Vision</span>
+    <span class="cs-tag">Gemini Vision</span>
+    <span class="cs-tag">Discogs API</span>
+    <span class="cs-tag">Vercel</span>
+    <span class="cs-tag">PWA</span>
+    <span class="cs-tag">AI integration</span>
+    <span class="cs-tag">Full stack</span>
+    <span class="cs-tag">Self-initiated</span>
+  </div>
+</div>
+</body>
+</html>
