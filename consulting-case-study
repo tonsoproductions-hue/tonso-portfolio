@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Study — Digital Operations Revamp for an Independent Beauty Brand</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #5f5e5a;
+  --color-text-tertiary: #888780;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f7f6f2;
+  --color-border-tertiary: rgba(0,0,0,0.12);
+  --color-border-secondary: rgba(0,0,0,0.25);
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+}
+body {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--color-text-primary);
+  background: #fafaf8;
+  padding: 3rem 2rem;
+  line-height: 1.6;
+}
+.cs-wrap { max-width: 780px; margin: 0 auto; padding: 2.5rem 0 3rem; }
+.cs-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 1rem; }
+.cs-title { font-family: 'DM Serif Display', serif; font-size: 38px; font-weight: 400; line-height: 1.15; margin-bottom: 0.5rem; }
+.cs-title em { font-style: italic; color: #B4B2A9; }
+.cs-tagline { font-size: 17px; font-weight: 300; color: var(--color-text-secondary); margin-bottom: 2rem; line-height: 1.5; }
+.cs-divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+.cs-meta-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--color-border-tertiary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 2.5rem; }
+.cs-meta-cell { background: var(--color-background-primary); padding: 1.25rem 1.5rem; }
+.cs-meta-label { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 6px; }
+.cs-meta-value { font-size: 14px; color: var(--color-text-primary); line-height: 1.5; }
+.cs-section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.75rem; }
+.cs-body { font-size: 15px; font-weight: 300; line-height: 1.8; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+.cs-body strong { font-weight: 500; color: var(--color-text-primary); }
+.cs-before-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 1.25rem 0 1.75rem; }
+.cs-before-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); padding: 1rem 1.25rem; }
+.cs-before-task { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.cs-before-detail { font-size: 12px; font-weight: 300; color: var(--color-text-secondary); line-height: 1.5; }
+.manual-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #A32D2D; background: #FCEBEB; border-radius: 4px; padding: 2px 7px; display: inline-block; margin-bottom: 8px; }
+.cs-pipeline { margin: 1.5rem 0 2rem; }
+.pipeline-track { display: flex; align-items: stretch; gap: 0; overflow-x: auto; padding-bottom: 4px; }
+.pipeline-stage { flex: 1; min-width: 88px; position: relative; }
+.stage-inner { padding: 12px 10px 12px 18px; background: var(--color-background-secondary); border-top: 0.5px solid var(--color-border-tertiary); border-bottom: 0.5px solid var(--color-border-tertiary); border-left: 0.5px solid var(--color-border-tertiary); height: 100%; display: flex; flex-direction: column; gap: 5px; }
+.pipeline-stage:first-child .stage-inner { border-radius: var(--border-radius-md) 0 0 var(--border-radius-md); padding-left: 14px; }
+.pipeline-stage:last-child .stage-inner { border-right: 0.5px solid var(--color-border-tertiary); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+.stage-arrow { position: absolute; right: -10px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 18px solid transparent; border-bottom: 18px solid transparent; border-left: 10px solid var(--color-border-tertiary); z-index: 2; }
+.stage-arrow-fill { position: absolute; right: -8px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-top: 17px solid transparent; border-bottom: 17px solid transparent; border-left: 9px solid; z-index: 3; }
+.stage-num { font-size: 10px; font-weight: 500; color: var(--color-text-tertiary); letter-spacing: 0.06em; }
+.stage-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); line-height: 1.3; }
+.stage-desc { font-size: 11px; font-weight: 300; color: var(--color-text-secondary); line-height: 1.4; margin-top: 2px; }
+.stage-badge { font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; display: inline-block; padding: 2px 6px; border-radius: 3px; margin-top: 4px; width: fit-content; }
+.badge-crm { background: #EAF3DE; color: #3B6D11; }
+.badge-auto { background: #FAEEDA; color: #854F0B; }
+.badge-escrow { background: #E6F1FB; color: #185FA5; }
+.pipeline-legend { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--color-text-secondary); }
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+.cs-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 2rem 0; }
+.cs-metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1.25rem 1rem; text-align: center; }
+.cs-metric-num { font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400; color: var(--color-text-primary); line-height: 1; margin-bottom: 6px; }
+.cs-metric-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.4; }
+.cs-blockquote { border-left: 2px solid var(--color-border-secondary); padding: 0.5rem 0 0.5rem 1.5rem; margin: 2rem 0; }
+.cs-blockquote p { font-family: 'DM Serif Display', serif; font-size: 20px; font-style: italic; color: var(--color-text-primary); line-height: 1.5; }
+.cs-deliverable-list { list-style: none; margin: 1rem 0 1.5rem; display: flex; flex-direction: column; gap: 10px; }
+.cs-deliverable-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; }
+.cs-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-text-tertiary); flex-shrink: 0; margin-top: 8px; }
+.cs-stack { display: flex; flex-wrap: wrap; gap: 8px; margin: 1.25rem 0 1.5rem; }
+.cs-stack-pill { font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; gap: 6px; }
+.pill-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.crm { background: #EAF3DE; border-color: #C0DD97; color: #3B6D11; }
+.crm .pill-dot { background: #639922; }
+.auto { background: #FAEEDA; border-color: #FAC775; color: #854F0B; }
+.auto .pill-dot { background: #BA7517; }
+.data { background: #E6F1FB; border-color: #B5D4F4; color: #185FA5; }
+.data .pill-dot { background: #378ADD; }
+.cs-tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.5rem; }
+.cs-tag { font-size: 12px; color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 4px 12px; }
+</style>
+</head>
+<body>
+<div class="cs-wrap">
+  <p class="cs-eyebrow">Case Study — Confidential Client</p>
+  <h1 class="cs-title">From <em>Manual Everything</em><br>to a Connected Operations System</h1>
+  <p class="cs-tagline">Full-stack build-out connecting HoneyBook, Google Sheets, Zapier, Make.com,<br>and the Google Maps API into a unified operations backbone for an independent beauty brand.</p>
+
+  <div class="cs-meta-grid">
+    <div class="cs-meta-cell">
+      <p class="cs-meta-label">Industry</p>
+      <p class="cs-meta-value">Beauty & Cosmetics</p>
+    </div>
+    <div class="cs-meta-cell">
+      <p class="cs-meta-label">Engagement type</p>
+      <p class="cs-meta-value">Strategy + Full Build-Out</p>
+    </div>
+    <div class="cs-meta-cell">
+      <p class="cs-meta-label">Focus areas</p>
+      <p class="cs-meta-value">CRM · Pipeline Design · Automation</p>
+    </div>
+  </div>
+
+  <p class="cs-section-label">Before we started</p>
+  <p class="cs-body">
+    When I came on, <strong>every single operational task was done by hand.</strong> The founder was the system — holding it all in her head, her inbox, and a tangle of spreadsheets that only she could decode. Crucially, there was <strong>no defined client journey at all.</strong> Leads came in and were handled differently every time, with no consistent process from first contact through to event day.
+  </p>
+
+  <div class="cs-before-grid">
+    <div class="cs-before-card">
+      <span class="manual-label">Manual</span>
+      <p class="cs-before-task">Client onboarding & follow-up</p>
+      <p class="cs-before-detail">No pipeline. Every inquiry was handled ad hoc — no consistent process from first contact to booking.</p>
+    </div>
+    <div class="cs-before-card">
+      <span class="manual-label">Manual</span>
+      <p class="cs-before-task">Proposals & contracts</p>
+      <p class="cs-before-detail">Sent individually with no templates. Retainer collection was informal, tracked in the founder's head.</p>
+    </div>
+    <div class="cs-before-card">
+      <span class="manual-label">Manual</span>
+      <p class="cs-before-task">Payout & contractor tracking</p>
+      <p class="cs-before-detail">Every payment cycle meant cross-referencing messages, invoices, and bank records to figure out who was owed what.</p>
+    </div>
+    <div class="cs-before-card">
+      <span class="manual-label">Manual</span>
+      <p class="cs-before-task">Contractor assignment</p>
+      <p class="cs-before-detail">Matching artists to on-site bookings by location required manual lookups with no system to support the decision.</p>
+    </div>
+  </div>
+
+  <div class="cs-blockquote">
+    <p>"There was no pipeline — just a list of names and a prayer that nothing fell through the cracks before event day."</p>
+  </div>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">The client journey we built</p>
+  <p class="cs-body">
+    A core deliverable was designing and implementing a <strong>seven-stage client pipeline in HoneyBook</strong> — the first structured customer journey this business had ever had. Each stage has defined triggers, automated actions, and clear handoff criteria so nothing gets lost and no client experiences an inconsistent process.
+  </p>
+
+  <div class="cs-pipeline">
+    <div class="pipeline-track">
+      <div class="pipeline-stage">
+        <div class="stage-inner" style="background:#EAF3DE;border-color:#C0DD97;">
+          <span class="stage-num">01</span>
+          <span class="stage-name" style="color:#27500A;">Onboarding</span>
+          <span class="stage-desc" style="color:#3B6D11;">Lead captured, intake questionnaire sent automatically</span>
+          <span class="stage-badge badge-crm">HoneyBook</span>
+        </div>
+        <div class="stage-arrow"></div>
+        <div class="stage-arrow-fill" style="border-left-color:#EAF3DE;"></div>
+      </div>
+      <div class="pipeline-stage">
+        <div class="stage-inner" style="background:#FAEEDA;border-color:#FAC775;">
+          <span class="stage-num">02</span>
+          <span class="stage-name" style="color:#633806;">Proposal</span>
+          <span class="stage-desc" style="color:#854F0B;">Scoped proposal generated from template and sent for review</span>
+          <span class="stage-badge badge-auto">Automated</span>
+        </div>
+        <div class="stage-arrow"></div>
+        <div class="stage-arrow-fill" style="border-left-color:#FAEEDA;"></div>
+      </div>
+      <div class="pipeline-stage">
+        <div class="stage-inner" style="background:#E6F1FB;border-color:#B5D4F4;">
+          <span class="stage-num">03</span>
+          <span class="stage-name" style="color:#042C53;">Retainer</span>
+          <span class="stage-desc" style="color:#185FA5;">Contract sent, retainer invoice triggered on proposal acceptance</span>
+          <span class="stage-badge badge-escrow">Payment</span>
+        </div>
+        <div class="stage-arrow"></div>
+        <div class="stage-arrow-fill" style="border-left-color:#E6F1FB;"></div>
+      </div>
+      <div class="pipeline-stage">
+        <div class="stage-inner" style="background:#FBEAF0;border-color:#F4C0D1;">
+          <span class="stage-num">04</span>
+          <span class="stage-name" style="color:#4B1528;">Trial Checklist</span>
+          <span class="stage-desc" style="color:#723E56;">Pre-trial prep tasks sent to client and artist</span>
+          <span class="stage-badge" style="background:#FBEAF0;color:#993556;">Checklist</span>
+        </div>
+        <div class="stage-arrow"></div>
+        <div class="stage-arrow-fill" style="border-left-color:#FBEAF0;"></div>
+      </div>
+      <div class="pipeline-stage">
+        <div class="stage-inner" style="background:#FBEAF0;border-color:#F4C0D1;">
+          <span class="stage-num">05</span>
+          <span class="stage-name" style="color:#4B1528;">Trial Escrow</span>
+          <span class="stage-desc" style="color:#723E56;">Trial payment held, released on client approval</span>
+          <span class="stage-badge badge-escrow">Payment</span>
+        </div>
+        <div class="stage-arrow"></div>
+        <div class="stage-arrow-fill" style="border-left-color:#FBEAF0;"></div>
+      </div>
+      <div class="pipeline-stage">
+        <div class="stage-inner" style="background:#FAEEDA;border-color:#FAC775;">
+          <span class="stage-num">06</span>
+          <span class="stage-name" style="color:#633806;">Event Checklist</span>
+          <span class="stage-desc" style="color:#854F0B;">Final logistics, artist assignment, location confirmed via Maps API</span>
+          <span class="stage-badge badge-auto">Automated</span>
+        </div>
+        <div class="stage-arrow"></div>
+        <div class="stage-arrow-fill" style="border-left-color:#FAEEDA;"></div>
+      </div>
+      <div class="pipeline-stage">
+        <div class="stage-inner" style="background:#EAF3DE;border-color:#C0DD97;">
+          <span class="stage-num">07</span>
+          <span class="stage-name" style="color:#27500A;">Event Day</span>
+          <span class="stage-desc" style="color:#3B6D11;">Final payout triggered, contractor record updated in Sheets</span>
+          <span class="stage-badge badge-crm">Complete</span>
+        </div>
+      </div>
+    </div>
+    <div class="pipeline-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#639922;"></div>HoneyBook stage</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#BA7517;"></div>Automated action</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#378ADD;"></div>Payment milestone</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#D4537E;"></div>Client-facing checklist</div>
+    </div>
+  </div>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">Tech stack</p>
+  <div class="cs-stack">
+    <span class="cs-stack-pill crm"><span class="pill-dot"></span>HoneyBook — CRM & pipeline</span>
+    <span class="cs-stack-pill data"><span class="pill-dot"></span>Google Sheets — contractor management</span>
+    <span class="cs-stack-pill auto"><span class="pill-dot"></span>Zapier — workflow automation</span>
+    <span class="cs-stack-pill auto"><span class="pill-dot"></span>Make.com — advanced automations</span>
+    <span class="cs-stack-pill data"><span class="pill-dot"></span>Google Maps API — location data</span>
+  </div>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">My role</p>
+  <p class="cs-body">
+    I led both the <strong>strategic recommendations</strong> and the <strong>complete technical build-out</strong>. This included designing the seven-stage client pipeline from scratch, configuring HoneyBook with custom templates and automated triggers at each stage, building the Google Sheets contractor system, and wiring the two platforms together via Zapier and Make.com. The Google Maps API integration replaced manual location matching for contractor assignments at the event checklist stage.
+  </p>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">What I built</p>
+  <ul class="cs-deliverable-list">
+    <li><span class="cs-dot"></span><span><strong>Seven-stage client pipeline</strong> — Designed and implemented the brand's first structured customer journey in HoneyBook, from initial onboarding through to event day, with defined triggers and automated handoffs at every stage.</span></li>
+    <li><span class="cs-dot"></span><span><strong>HoneyBook CRM configuration</strong> — Custom pipelines, intake questionnaires, proposal templates, contracts, retainer invoices, and escrow-style trial payment flows tailored to the brand's booking model.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Google Sheets contractor system</strong> — A structured tracker covering onboarding status, agreed rates, project assignments, deliverables, and payout history — giving every contractor an auditable record for the first time.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Zapier & Make.com automation layer</strong> — Multi-step automations connecting HoneyBook pipeline events to the Sheets tracker automatically, eliminating manual data entry across both systems.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Google Maps API integration</strong> — Location-aware logic at the event checklist stage, replacing manual proximity lookups with automated contractor matching.</span></li>
+    <li><span class="cs-dot"></span><span><strong>SOPs and handoff documentation</strong> — Lightweight operating guides so the founder could maintain and extend the system independently after handoff.</span></li>
+  </ul>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">Outcome</p>
+  <p class="cs-body">
+    What had been a fully manual, process-free operation became a structured, largely automated one. Every client now moves through the same consistent journey — from first inquiry to event day — with automated touchpoints, payment milestones, and contractor assignments happening in the background. Payout disputes dropped to zero in the first billing cycle, manual data entry was eliminated, and the founder stopped spending her evenings reconciling records by hand. With real infrastructure in place for the first time, the business was ready to scale without scaling the chaos.
+  </p>
+
+  <div class="cs-metrics">
+    <div class="cs-metric">
+      <p class="cs-metric-num">7</p>
+      <p class="cs-metric-desc">Defined pipeline stages — built from zero</p>
+    </div>
+    <div class="cs-metric">
+      <p class="cs-metric-num">0</p>
+      <p class="cs-metric-desc">Payout disputes after system launch</p>
+    </div>
+    <div class="cs-metric">
+      <p class="cs-metric-num">100%</p>
+      <p class="cs-metric-desc">Of manual data entry replaced by automation</p>
+    </div>
+  </div>
+
+  <div class="cs-tag-row">
+    <span class="cs-tag">HoneyBook</span>
+    <span class="cs-tag">Google Sheets</span>
+    <span class="cs-tag">Zapier</span>
+    <span class="cs-tag">Make.com</span>
+    <span class="cs-tag">Google Maps API</span>
+    <span class="cs-tag">Pipeline design</span>
+    <span class="cs-tag">Customer journey</span>
+    <span class="cs-tag">Workflow automation</span>
+    <span class="cs-tag">Operations design</span>
+  </div>
+</div>
+</body>
+</html>
