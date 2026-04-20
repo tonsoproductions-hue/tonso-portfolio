@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Your Name · Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,300;1,400;1,700&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #0f0f0f;
+  --paper: #fefcf4;
+  --bg: #ede9de;
+  --font: 'Be Vietnam Pro', sans-serif;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  background-image: radial-gradient(circle, #b8b4a4 1px, transparent 1px);
+  background-size: 22px 22px;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2.5rem 1.5rem 5rem;
+  cursor: crosshair;
+}
+
+/* PLACEMAT */
+.placemat {
+  width: 100%;
+  max-width: 880px;
+  background: var(--paper);
+  border: 4px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 8px 8px 0 var(--ink);
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.placemat.exit {
+  opacity: 0; transform: scale(0.96) translateY(-10px); pointer-events: none;
+}
+.placemat-inner {
+  margin: 10px;
+  padding: 2.25rem 2.5rem;
+  border: 2.5px dashed rgba(0,0,0,0.18);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
+}
+
+/* CORNER DOODLES */
+.cdoodle {
+  position: absolute;
+  width: 76px; height: 76px;
+  opacity: 0.12; pointer-events: none;
+}
+.cd-tl { top:8px; left:8px; }
+.cd-tr { top:8px; right:8px; transform:scaleX(-1); }
+.cd-bl { bottom:8px; left:8px; transform:scaleY(-1); }
+.cd-br { bottom:8px; right:8px; transform:scale(-1,-1); }
+
+/* SCATTER */
+.scatter {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.1;
+}
+
+/* HEADER */
+.menu-header {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 2.5px dashed rgba(0,0,0,0.15);
+  margin-bottom: 1.75rem;
+  animation: popIn 0.55s var(--spring) both;
+}
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border: 2.5px solid var(--ink);
+  border-radius: 100px;
+  padding: 0.25rem 1rem;
+  margin-bottom: 0.8rem;
+}
+.menu-name {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  margin-bottom: 0.35rem;
+}
+.menu-name em {
+  font-style: italic;
+  font-weight: 300;
+  opacity: 0.35;
+}
+.menu-wave {
+  display: block;
+  width: 100%; max-width: 340px;
+  margin: 0.9rem auto;
+  overflow: visible;
+}
+.menu-tagline {
+  font-size: 0.82rem;
+  font-weight: 400;
+  font-style: italic;
+  opacity: 0.4;
+}
+
+/* JOURNEY SECTION */
+.journey-label {
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  opacity: 0.3;
+  margin-bottom: 1.25rem;
+  animation: popIn 0.5s 0.12s var(--spring) both;
+}
+.journeys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.15rem;
+  margin-bottom: auto;
+  animation: popIn 0.5s 0.22s var(--spring) both;
+}
+
+/* JOURNEY CARD */
+.jcard {
+  border: 3.5px solid var(--ink);
+  border-radius: 16px;
+  padding: 1.3rem 1rem 1.1rem;
+  background: #fff;
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+  transition: transform 0.3s var(--spring), box-shadow 0.2s;
+  user-select: none;
+}
+.jcard:hover {
+  transform: translateY(-7px) rotate(-0.7deg);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+.jcard:active { transform: scale(0.96); }
+.jcard-num {
+  position: absolute;
+  top: -13px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.55rem; font-weight: 900;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 0.18rem 0.85rem;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.jcard-art {
+  height: 100px;
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 2.5px dashed rgba(0,0,0,0.12);
+  margin-bottom: 0.9rem; padding-bottom: 0.9rem;
+}
+.jcard-stars {
+  font-size: 0.6rem; letter-spacing: 0.06em; opacity: 0.28;
+  margin-bottom: 0.45rem;
+}
+.jcard-title { font-size: 1.15rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.3rem; }
+.jcard-desc { font-size: 0.72rem; line-height: 1.5; opacity: 0.4; margin-bottom: 0.85rem; }
+.jcard-go {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+  border: 2.5px solid var(--ink); border-radius: 100px;
+  padding: 0.25rem 0.85rem;
+  transition: background 0.2s, color 0.2s;
+}
+.jcard:hover .jcard-go { background: var(--ink); color: var(--paper); }
+
+/* FOOTER */
+.menu-footer {
+  border-top: 2.5px dashed rgba(0,0,0,0.15);
+  margin-top: 1.75rem; padding-top: 1.5rem;
+  display: flex; justify-content: space-between;
+  align-items: flex-end; gap: 1rem; flex-wrap: wrap;
+  animation: popIn 0.5s 0.32s var(--spring) both;
+}
+.footer-note { font-size: 0.78rem; font-style: italic; opacity: 0.38; line-height: 1.65; max-width: 340px; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 0.55rem; justify-content: flex-end; }
+.footer-links a {
+  font-size: 0.64rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink); text-decoration: none;
+  border: 2px solid rgba(0,0,0,0.2); border-radius: 100px;
+  padding: 0.22rem 0.7rem;
+  opacity: 0.45;
+  transition: border-color 0.18s, opacity 0.18s;
+}
+.footer-links a:hover { border-color: var(--ink); opacity: 1; }
+
+/* JOURNEY VIEWS */
+.journey-view {
+  position: fixed; inset: 0;
+  background: var(--bg);
+  background-image: radial-gradient(circle, #b8b4a4 1px, transparent 1px);
+  background-size: 22px 22px;
+  z-index: 300;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: 2.5rem 1.5rem 5rem;
+  overflow-y: auto;
+  opacity: 0; pointer-events: none;
+  transform: scale(0.96);
+  transition: opacity 0.38s ease, transform 0.38s ease;
+}
+.journey-view.active { opacity: 1; pointer-events: all; transform: scale(1); }
+.view-placemat {
+  width: 100%; max-width: 880px;
+  background: var(--paper);
+  border: 4px solid var(--ink);
+  border-radius: 20px;
+  box-shadow: 8px 8px 0 var(--ink);
+}
+.view-inner {
+  margin: 10px; padding: 2.25rem 2.5rem;
+  border: 2.5px dashed rgba(0,0,0,0.18);
+  border-radius: 14px;
+}
+
+/* BACK BUTTON */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font); font-size: 0.64rem; font-weight: 800;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  background: none; border: 2.5px solid var(--ink);
+  border-radius: 100px; padding: 0.3rem 0.9rem;
+  cursor: pointer; margin-bottom: 1.75rem;
+  transition: background 0.18s, color 0.18s;
+}
+.back-btn:hover { background: var(--ink); color: var(--paper); }
+
+/* VIEW HEADER */
+.view-header {
+  text-align: center; padding-bottom: 1.5rem;
+  border-bottom: 2.5px dashed rgba(0,0,0,0.15);
+  margin-bottom: 2rem;
+}
+.view-eyebrow { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.3; margin-bottom: 0.5rem; }
+.view-h1 { font-size: clamp(2.2rem, 5vw, 3.8rem); font-weight: 900; letter-spacing: -0.035em; line-height: 1; }
+.view-wave {
+  display: block; margin: 0.75rem auto 0;
+  width: 200px; height: 10px; overflow: visible;
+}
+
+/* PROJECTS */
+.proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.1rem; }
+.pcard {
+  border: 3px solid var(--ink); border-radius: 14px;
+  padding: 1.5rem; background: #fff;
+  transition: transform 0.3s var(--spring), box-shadow 0.2s;
+}
+.pcard:hover { transform: translateY(-5px) rotate(0.4deg); box-shadow: 4px 4px 0 var(--ink); }
+.pcard-num { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.25; margin-bottom: 0.6rem; }
+.pcard-name { font-size: 1.1rem; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 0.35rem; }
+.pcard-desc { font-size: 0.78rem; line-height: 1.6; opacity: 0.45; margin-bottom: 0.9rem; }
+.ptags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.ptag { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; border: 2px solid rgba(0,0,0,0.22); border-radius: 100px; padding: 0.18rem 0.55rem; opacity: 0.65; }
+
+/* RESUME */
+.dl-link {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font); font-size: 0.68rem; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  background: var(--ink); color: var(--paper);
+  text-decoration: none; border-radius: 100px;
+  padding: 0.55rem 1.25rem; margin-bottom: 2rem;
+  transition: opacity 0.18s;
+}
+.dl-link:hover { opacity: 0.72; }
+.resume-cols { display: grid; grid-template-columns: 1fr 1.8fr; gap: 2.5rem; }
+.rsec { margin-bottom: 2rem; }
+.rsec-title { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0.3; border-bottom: 2px dashed rgba(0,0,0,0.15); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+.ritem { margin-bottom: 1.3rem; }
+.ritem-title { font-size: 0.95rem; font-weight: 800; letter-spacing: -0.015em; margin-bottom: 0.2rem; }
+.ritem-meta { font-size: 0.73rem; opacity: 0.38; margin-bottom: 0.4rem; }
+.ritem-body { font-size: 0.78rem; line-height: 1.65; opacity: 0.48; }
+.skill-row { margin-bottom: 0.65rem; }
+.skill-label { display: flex; justify-content: space-between; font-size: 0.73rem; font-weight: 600; opacity: 0.58; margin-bottom: 0.28rem; }
+.skill-track { height: 4px; background: rgba(0,0,0,0.1); border-radius: 100px; overflow: hidden; }
+.skill-fill { height: 100%; background: var(--ink); border-radius: 100px; transform: scaleX(0); transform-origin: left; transition: transform 0.9s cubic-bezier(0.4,0,0.2,1); }
+.journey-view.active .skill-fill { transform: scaleX(1); }
+
+/* PHOTOS */
+.photo-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.8rem; }
+.photo-slot {
+  border: 3px solid var(--ink); border-radius: 14px;
+  aspect-ratio: 4/5; background: rgba(0,0,0,0.04);
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 0.4rem;
+  transition: transform 0.3s var(--spring);
+  cursor: crosshair;
+}
+.photo-slot:nth-child(4) { grid-column: span 2; aspect-ratio: 16/9; }
+.photo-slot:hover { transform: scale(0.97) rotate(-0.7deg); }
+.photo-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-empty { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.2; }
+
+/* ANIMATIONS */
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.93) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  body { padding: 1rem 0.75rem 3rem; }
+  .placemat-inner, .view-inner { padding: 1.25rem; }
+  .journeys { grid-template-columns: 1fr; }
+  .resume-cols { grid-template-columns: 1fr; }
+  .photo-grid { grid-template-columns: repeat(2,1fr); }
+  .photo-slot:nth-child(4) { grid-column: span 1; aspect-ratio: 4/5; }
+  .menu-name { font-size: 3rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ LANDING ═══════ -->
+<div id="landing">
+<div class="placemat">
+
+  <!-- Corner SVG doodles -->
+  <svg class="cdoodle cd-tl" viewBox="0 0 76 76" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round">
+    <path d="M8 8 Q8 36 36 36"/>
+    <path d="M8 22 Q22 22 22 8"/>
+    <circle cx="44" cy="12" r="3.5" fill="#000"/>
+    <path d="M28 6 L30 11 L35 12 L30 13 L28 18 L26 13 L21 12 L26 11Z" fill="#000" stroke="none"/>
+    <circle cx="14" cy="42" r="2" fill="#000"/>
+    <path d="M46 24 Q52 18 58 24 Q52 30 46 24Z" fill="#000" stroke="none"/>
+  </svg>
+  <svg class="cdoodle cd-tr" viewBox="0 0 76 76" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round">
+    <path d="M8 8 Q8 36 36 36"/>
+    <path d="M8 22 Q22 22 22 8"/>
+    <circle cx="44" cy="12" r="3.5" fill="#000"/>
+    <path d="M28 6 L30 11 L35 12 L30 13 L28 18 L26 13 L21 12 L26 11Z" fill="#000" stroke="none"/>
+    <circle cx="14" cy="42" r="2" fill="#000"/>
+  </svg>
+  <svg class="cdoodle cd-bl" viewBox="0 0 76 76" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round">
+    <path d="M8 8 Q8 36 36 36"/>
+    <path d="M8 22 Q22 22 22 8"/>
+    <path d="M28 6 L30 11 L35 12 L30 13 L28 18 L26 13 L21 12 L26 11Z" fill="#000" stroke="none"/>
+  </svg>
+  <svg class="cdoodle cd-br" viewBox="0 0 76 76" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round">
+    <path d="M8 8 Q8 36 36 36"/>
+    <path d="M8 22 Q22 22 22 8"/>
+    <circle cx="44" cy="12" r="3.5" fill="#000"/>
+  </svg>
+
+  <!-- Scattered decorations -->
+  <svg class="scatter" style="top:18%;right:5%;width:20px;animation:float 4s ease-in-out infinite" viewBox="0 0 24 24">
+    <path d="M12 2L13.6 9H20L15 13.5L17 20L12 16L7 20L9 13.5L4 9H10.4Z" fill="#000"/>
+  </svg>
+  <svg class="scatter" style="top:58%;left:3%;width:14px;animation:float 3.5s 1s ease-in-out infinite" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" stroke="#000" stroke-width="2.5" fill="none"/>
+    <circle cx="12" cy="12" r="3" fill="#000"/>
+  </svg>
+  <svg class="scatter" style="bottom:24%;right:4%;width:16px;animation:float 5s 0.5s ease-in-out infinite" viewBox="0 0 24 24">
+    <path d="M12 2L13.6 9H20L15 13.5L17 20L12 16L7 20L9 13.5L4 9H10.4Z" fill="#000"/>
+  </svg>
+  <svg class="scatter" style="top:75%;left:4.5%;width:10px;opacity:0.07" viewBox="0 0 24 24">
+    <path d="M12 2L13.6 9H20L15 13.5L17 20L12 16L7 20L9 13.5L4 9H10.4Z" fill="#000"/>
+  </svg>
+
+  <div class="placemat-inner">
+
+    <!-- HEADER -->
+    <div class="menu-header">
+      <div class="header-badge">
+        <svg width="7" height="7" viewBox="0 0 7 7"><circle cx="3.5" cy="3.5" r="3" fill="#0f0f0f"/></svg>
+        Est. 2025 &nbsp;·&nbsp; Open Daily
+      </div>
+      <h1 class="menu-name">Jonathan<br><em>Ton</em></h1>
+      <svg class="menu-wave" viewBox="0 0 340 14" preserveAspectRatio="none" fill="none" height="14">
+        <path d="M0,7 Q17,0 34,7 Q51,14 68,7 Q85,0 102,7 Q119,14 136,7 Q153,0 170,7 Q187,14 204,7 Q221,0 238,7 Q255,14 272,7 Q289,0 306,7 Q323,14 340,7" stroke="#0f0f0f" stroke-width="2.5"/>
+      </svg>
+      <p class="menu-tagline">designer · developer · person with a camera</p>
+    </div>
+
+    <p class="journey-label">— pick your adventure —</p>
+
+    <div class="journeys">
+
+      <!-- PROJECTS CARD -->
+      <div class="jcard" onclick="openView('projects')">
+        <span class="jcard-num">01 · Craft</span>
+        <div class="jcard-art">
+          <svg width="76" height="76" viewBox="0 0 76 76" fill="none" stroke="#0f0f0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="8" y="13" width="60" height="38" rx="5"/>
+            <rect x="14" y="19" width="48" height="26" rx="2"/>
+            <line x1="38" y1="51" x2="38" y2="62"/>
+            <line x1="26" y1="62" x2="50" y2="62"/>
+            <line x1="20" y1="28" x2="32" y2="28"/>
+            <line x1="20" y1="33" x2="44" y2="33"/>
+            <line x1="20" y1="38" x2="38" y2="38"/>
+            <rect x="40" y="36" width="3" height="5" rx="1" fill="#0f0f0f" stroke="none"/>
+            <path d="M57 22 L58.4 26.2 L62.8 26.2 L59.5 28.8 L60.8 33 L57 30.5 L53.2 33 L54.5 28.8 L51.2 26.2 L55.6 26.2 Z" fill="#0f0f0f" stroke="none"/>
+          </svg>
+        </div>
+        <div class="jcard-stars">★ ★ ★ ★ ★</div>
+        <div class="jcard-title">Projects</div>
+        <div class="jcard-desc">Things I've built, shipped, and tinkered with.</div>
+        <span class="jcard-go">Explore ↗</span>
+      </div>
+
+      <!-- RESUME CARD -->
+      <div class="jcard" onclick="openView('resume')">
+        <span class="jcard-num">02 · Story</span>
+        <div class="jcard-art">
+          <svg width="76" height="76" viewBox="0 0 76 76" fill="none" stroke="#0f0f0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 7 L55 7 L63 17 L63 69 L17 69 Z"/>
+            <path d="M55 7 L55 17 L63 17"/>
+            <circle cx="36" cy="24" r="6"/>
+            <line x1="27" y1="35" x2="45" y2="35"/>
+            <line x1="21" y1="44" x2="55" y2="44"/>
+            <line x1="21" y1="51" x2="55" y2="51"/>
+            <line x1="21" y1="58" x2="48" y2="58"/>
+            <path d="M57 54 L58.2 57.8 L62.2 57.8 L59 60.1 L60.2 63.9 L57 61.6 L53.8 63.9 L55 60.1 L51.8 57.8 L55.8 57.8 Z" fill="#0f0f0f" stroke="none"/>
+          </svg>
+        </div>
+        <div class="jcard-stars">★ ★ ★ ★ ★</div>
+        <div class="jcard-title">Résumé</div>
+        <div class="jcard-desc">Where I've been and what I've learned.</div>
+        <span class="jcard-go">Read ↗</span>
+      </div>
+
+      <!-- PHOTOS CARD -->
+      <div class="jcard" onclick="openView('photos')">
+        <span class="jcard-num">03 · Vision</span>
+        <div class="jcard-art">
+          <svg width="76" height="76" viewBox="0 0 76 76" fill="none" stroke="#0f0f0f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="7" y="22" width="62" height="42" rx="7"/>
+            <path d="M25 22 L25 16 Q25 12 29 12 L47 12 Q51 12 51 16 L51 22"/>
+            <circle cx="38" cy="43" r="14"/>
+            <circle cx="38" cy="43" r="8"/>
+            <circle cx="38" cy="43" r="3.5" fill="#0f0f0f" stroke="none"/>
+            <rect x="55" y="27" width="9" height="6" rx="2"/>
+            <path d="M15 47 L16.4 51.2 L20.8 51.2 L17.4 53.8 L18.8 58 L15 55.5 L11.2 58 L12.6 53.8 L9.2 51.2 L13.6 51.2 Z" fill="#0f0f0f" stroke="none"/>
+          </svg>
+        </div>
+        <div class="jcard-stars">★ ★ ★ ★ ★</div>
+        <div class="jcard-title">Photos</div>
+        <div class="jcard-desc">Moments that made me slow down and look.</div>
+        <span class="jcard-go">See ↗</span>
+      </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="menu-footer">
+      <p class="footer-note">A digital space I built for wandering. Pull up a chair — make yourself at home.</p>
+      <div class="footer-links">
+        <a href="#">GitHub</a>
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Email</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+
+<!-- ═══════ PROJECTS VIEW ═══════ -->
+<div id="view-projects" class="journey-view">
+  <div class="view-placemat">
+    <div class="view-inner">
+      <button class="back-btn" onclick="closeView('projects')">← Back to Menu</button>
+      <div class="view-header">
+        <p class="view-eyebrow">01 · Craft</p>
+        <h2 class="view-h1">Projects</h2>
+        <svg class="view-wave" viewBox="0 0 200 10" fill="none" height="10">
+          <path d="M0,5 Q12.5,0 25,5 Q37.5,10 50,5 Q62.5,0 75,5 Q87.5,10 100,5 Q112.5,0 125,5 Q137.5,10 150,5 Q162.5,0 175,5 Q187.5,10 200,5" stroke="#0f0f0f" stroke-width="2" opacity="0.2"/>
+        </svg>
+      </div>
+      <div class="proj-grid">
+        <div class="pcard">
+          <div class="pcard-num">Project 01</div>
+          <div class="pcard-name">Project Alpha</div>
+          <div class="pcard-desc">A short description of what this project does and why it matters. Keep it honest and human.</div>
+          <div class="ptags"><span class="ptag">React</span><span class="ptag">TypeScript</span><span class="ptag">2024</span></div>
+        </div>
+        <div class="pcard">
+          <div class="pcard-num">Project 02</div>
+          <div class="pcard-name">Project Beta</div>
+          <div class="pcard-desc">An API, a tool, or an experiment that grew into something real and actually useful.</div>
+          <div class="ptags"><span class="ptag">Python</span><span class="ptag">Open Source</span></div>
+        </div>
+        <div class="pcard">
+          <div class="pcard-num">Project 03</div>
+          <div class="pcard-name">Project Gamma</div>
+          <div class="pcard-desc">The side project you keep coming back to. Started as a weekend thing. Still going.</div>
+          <div class="ptags"><span class="ptag">Design</span><span class="ptag">Figma</span><span class="ptag">WIP</span></div>
+        </div>
+        <div class="pcard">
+          <div class="pcard-num">Project 04</div>
+          <div class="pcard-name">Project Delta</div>
+          <div class="pcard-desc">A collaboration or commission — a cool concept that needed to exist in the world.</div>
+          <div class="ptags"><span class="ptag">Next.js</span><span class="ptag">2025</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════ RESUME VIEW ═══════ -->
+<div id="view-resume" class="journey-view">
+  <div class="view-placemat">
+    <div class="view-inner">
+      <button class="back-btn" onclick="closeView('resume')">← Back to Menu</button>
+      <div class="view-header">
+        <p class="view-eyebrow">02 · Story</p>
+        <h2 class="view-h1">Résumé</h2>
+        <svg class="view-wave" viewBox="0 0 200 10" fill="none" height="10">
+          <path d="M0,5 Q12.5,0 25,5 Q37.5,10 50,5 Q62.5,0 75,5 Q87.5,10 100,5 Q112.5,0 125,5 Q137.5,10 150,5 Q162.5,0 175,5 Q187.5,10 200,5" stroke="#0f0f0f" stroke-width="2" opacity="0.2"/>
+        </svg>
+      </div>
+      <a href="#" class="dl-link">↓ Download PDF</a>
+      <div class="resume-cols">
+        <div>
+          <div class="rsec">
+            <div class="rsec-title">Skills</div>
+            <div class="skill-row">
+              <div class="skill-label"><span>Design</span><span>95%</span></div>
+              <div class="skill-track"><div class="skill-fill" style="width:95%"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-label"><span>Frontend</span><span>85%</span></div>
+              <div class="skill-track"><div class="skill-fill" style="width:85%"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-label"><span>Backend</span><span>70%</span></div>
+              <div class="skill-track"><div class="skill-fill" style="width:70%"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-label"><span>Photography</span><span>80%</span></div>
+              <div class="skill-track"><div class="skill-fill" style="width:80%"></div></div>
+            </div>
+          </div>
+          <div class="rsec">
+            <div class="rsec-title">Education</div>
+            <div class="ritem">
+              <div class="ritem-title">B.Sc. Computer Science</div>
+              <div class="ritem-meta">University Name · 2019–2023</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="rsec">
+            <div class="rsec-title">Experience</div>
+            <div class="ritem">
+              <div class="ritem-title">Senior Designer / Developer</div>
+              <div class="ritem-meta">Company Name · 2023 – Present</div>
+              <div class="ritem-body">Led design systems work, built internal tooling, and collaborated with product teams to ship things people actually use.</div>
+            </div>
+            <div class="ritem">
+              <div class="ritem-title">Frontend Engineer</div>
+              <div class="ritem-meta">Another Company · 2021 – 2023</div>
+              <div class="ritem-body">Worked on consumer-facing interfaces. Cared about performance, accessibility, and tiny delightful details.</div>
+            </div>
+            <div class="ritem">
+              <div class="ritem-title">Freelance Creative</div>
+              <div class="ritem-meta">Self · 2019 – 2021</div>
+              <div class="ritem-body">Branding, web design, and photography for local businesses and early-stage startups.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════ PHOTOS VIEW ═══════ -->
+<div id="view-photos" class="journey-view">
+  <div class="view-placemat">
+    <div class="view-inner">
+      <button class="back-btn" onclick="closeView('photos')">← Back to Menu</button>
+      <div class="view-header">
+        <p class="view-eyebrow">03 · Vision</p>
+        <h2 class="view-h1">Photography</h2>
+        <svg class="view-wave" viewBox="0 0 200 10" fill="none" height="10">
+          <path d="M0,5 Q12.5,0 25,5 Q37.5,10 50,5 Q62.5,0 75,5 Q87.5,10 100,5 Q112.5,0 125,5 Q137.5,10 150,5 Q162.5,0 175,5 Q187.5,10 200,5" stroke="#0f0f0f" stroke-width="2" opacity="0.2"/>
+        </svg>
+      </div>
+      <div class="photo-grid">
+        <div class="photo-slot"><span class="photo-empty">Add Photo</span></div>
+        <div class="photo-slot"><span class="photo-empty">Add Photo</span></div>
+        <div class="photo-slot"><span class="photo-empty">Add Photo</span></div>
+        <div class="photo-slot"><span class="photo-empty">Add Photo</span></div>
+        <div class="photo-slot"><span class="photo-empty">Add Photo</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openView(id) {
+  document.querySelector('.placemat').classList.add('exit');
+  setTimeout(() => document.getElementById('view-' + id).classList.add('active'), 280);
+}
+function closeView(id) {
+  document.getElementById('view-' + id).classList.remove('active');
+  setTimeout(() => document.querySelector('.placemat').classList.remove('exit'), 80);
+}
+</script>
+</body>
+</html>
