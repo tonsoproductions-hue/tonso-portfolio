@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>waterline — studies</title>
+<style>
+  :root{
+    --ink:#04070d;
+    --mist:rgba(180,205,230,.55);
+  }
+  html,body{
+    margin:0; height:100%; overflow:hidden;
+    background:var(--ink);
+    cursor:none;
+    font-family:"Be Vietnam Pro", system-ui, sans-serif;
+    touch-action:none;            /* stop the page scrolling/zooming under a drag */
+    overscroll-behavior:none;
+    -webkit-user-select:none; user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  canvas{ display:block; width:100vw; height:100vh; height:100dvh; touch-action:none; }
+
+  .label{
+    position:fixed; left:24px; bottom:20px;
+    font-weight:300; font-size:11px; line-height:1.6;
+    letter-spacing:.18em; text-transform:lowercase;
+    color:var(--mist);
+    pointer-events:none; user-select:none;
+    transition:opacity 2.5s ease;
+  }
+  .label em{ font-style:normal; opacity:.45; display:block; letter-spacing:.12em; }
+  .label.faded{ opacity:.15; }
+
+  .hint{
+    position:fixed; left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    font-weight:300; font-size:12px; line-height:1.5;
+    letter-spacing:.3em; text-transform:lowercase;
+    color:var(--mist);
+    pointer-events:none; user-select:none;
+    animation:breathe 4s ease-in-out infinite;
+    transition:opacity 1.4s ease;
+  }
+  .hint.faded{ opacity:0 !important; }
+  @keyframes breathe{ 0%,100%{opacity:.25} 50%{opacity:.7} }
+
+  .modes{
+    position:fixed; right:24px; bottom:18px;
+    display:flex; gap:16px;
+    user-select:none;
+  }
+  .modes button{
+    all:unset;
+    cursor:pointer;
+    font-family:inherit; font-weight:300; font-size:11px;
+    letter-spacing:.18em; text-transform:lowercase;
+    color:rgba(180,205,230,.32);
+    padding:6px 2px;
+    border-bottom:1px solid transparent;
+    transition:color .4s ease, border-color .4s ease;
+  }
+  .modes button:hover{ color:rgba(200,225,250,.8); }
+  .modes button.on{
+    color:rgba(210,235,255,.95);
+    border-bottom-color:rgba(210,235,255,.45);
+  }
+  .modes button:focus-visible{ outline:1px solid rgba(210,235,255,.6); outline-offset:3px; }
+
+  /* ---- touch / small screens ---- */
+  @media (hover: none), (max-width: 640px){
+    html,body{ cursor:auto; }                 /* no fake cursor where there's no pointer */
+    .modes{
+      right:12px; left:12px; bottom:12px;
+      justify-content:center; flex-wrap:wrap; gap:6px;
+    }
+    .modes button{
+      font-size:12px; padding:10px 12px;       /* ~44px tap targets */
+      border:1px solid rgba(180,205,230,.18);
+      border-radius:999px;
+    }
+    .modes button.on{
+      border-color:rgba(210,235,255,.45);
+      background:rgba(210,235,255,.06);
+    }
+    .label{ left:14px; bottom:62px; font-size:10px; }
+    .hint{ font-size:11px; letter-spacing:.22em; width:78%; text-align:center; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .hint{ animation:none; opacity:.5; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300&display=swap" rel="stylesheet">
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hint" id="hint">move through the water · click to drop a stone</div>
+<div class="label" id="label">waterline · studies<em>after line05x5d · chris shier</em></div>
+<div class="modes" aria-label="rendering study">
+  <button data-m="lines" class="on">1 · lines</button>
+  <button data-m="weave">2 · weave</button>
+  <button data-m="rings">3 · rings</button>
+  <button data-m="dust">4 · dust</button>
+  <button data-m="cycle">5 · drift</button>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  if (matchMedia('(hover: none)').matches){
+    document.getElementById('hint').textContent = 'touch the water · tap to drop a stone';
+  }
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouch = matchMedia('(hover: none)').matches || ('ontouchstart' in window);
+  const isSmall = matchMedia('(max-width: 640px)').matches;
+
+  // ======================================================================
+  // SHARED SIMULATION — identical physics to the canonical waterline.
+  // The studies below are only different ways of *seeing* this same water.
+  // ======================================================================
+
+  // coarser field + capped resolution on phones keeps the framerate smooth
+  const ROW_GAP = isSmall ? 22 : 16;
+  const COL_GAP = isSmall ? 14 : 10;
+  let W, H, DPR, rows, cols, marginY;
+  let u, v;
+
+  function resize(){
+    DPR = Math.min(devicePixelRatio || 1, isSmall ? 1.5 : 2);
+    W = innerWidth; H = innerHeight;
+    canvas.width  = W * DPR;
+    canvas.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    rows = Math.ceil(H / ROW_GAP) + 2;
+    cols = Math.ceil(W / COL_GAP) + 2;
+    marginY = (H - (rows - 1) * ROW_GAP) / 2;
+    u = new Float32Array(rows * cols);
+    v = new Float32Array(rows * cols);
+    ctx.fillStyle = '#04070d';
+    ctx.fillRect(0, 0, W, H);
+  }
+  resize();
+  addEventListener('resize', resize);
+
+  const mouse = { x:-9999, y:-9999, vx:0, vy:0, in:false };
+  const ripples = [];
+
+  function pointerMove(x, y){
+    if (mouse.in){ mouse.vx = x - mouse.x; mouse.vy = y - mouse.y; }
+    mouse.x = x; mouse.y = y; mouse.in = true;
+    fadeHint();
+  }
+  addEventListener('pointermove', e => pointerMove(e.clientX, e.clientY));
+  addEventListener('pointerdown', e => {
+    if (e.target.closest('.modes')) return;
+    pointerMove(e.clientX, e.clientY);
+    ripples.push({ x:e.clientX, y:e.clientY, t:0 });
+    if (ripples.length > 8) ripples.shift();
+  });
+  addEventListener('pointerleave', () => { mouse.in = false; mouse.x = mouse.y = -9999; });
+
+  let hintFaded = false;
+  function fadeHint(){
+    if (hintFaded) return;
+    hintFaded = true;
+    document.getElementById('hint').classList.add('faded');
+    setTimeout(() => document.getElementById('label').classList.add('faded'), 9000);
+  }
+
+  const WAVE   = 0.16;
+  const SPRING = 0.010;
+  const DAMP   = 0.965;
+  const TOUCH_R = isTouch ? 160 : 130;
+  const SWELL  = reduceMotion ? 0 : 1;
+
+  let t = 0;
+  const HUE_DRIFT = 9;                                  // degrees per second — full RGB cycle ≈ 40s
+  const baseHue = () => (205 + t * HUE_DRIFT) % 360;    // resting color slowly rotates the spectrum
+
+  function step(){
+    t += 0.016;
+    const touchR2 = TOUCH_R * TOUCH_R;
+    const speed = Math.min(Math.hypot(mouse.vx, mouse.vy), 40);
+
+    for (let r = 0; r < rows; r++){
+      const y0 = marginY + r * ROW_GAP;
+      const base = r * cols;
+      const dyMouse = y0 - mouse.y;
+
+      for (let c = 0; c < cols; c++){
+        const i = base + c;
+        const x0 = c * COL_GAP;
+
+        const left  = c > 0        ? u[i-1] : u[i];
+        const right = c < cols - 1 ? u[i+1] : u[i];
+        let a = WAVE * (left + right - 2 * u[i]) - SPRING * u[i];
+
+        if (r > 0)        a += 0.012 * (u[i - cols] - u[i]);
+        if (r < rows - 1) a += 0.012 * (u[i + cols] - u[i]);
+
+        if (mouse.in){
+          const dx = x0 - mouse.x;
+          const d2 = dx*dx + dyMouse*dyMouse;
+          if (d2 < touchR2){
+            const fall = Math.exp(-d2 / (touchR2 * 0.35));
+            const dir = dyMouse >= 0 ? 1 : -1;
+            a += dir * fall * (0.9 + speed * 0.28);
+            a += mouse.vy * fall * 0.10;
+          }
+        }
+
+        v[i] = (v[i] + a) * DAMP;
+      }
+    }
+
+    for (let k = ripples.length - 1; k >= 0; k--){
+      const rp = ripples[k];
+      rp.t += 0.016;
+      const R = rp.t * 340;
+      const width = 60;
+      const decay = Math.exp(-rp.t * 1.4);
+      if (decay < 0.02){ ripples.splice(k, 1); continue; }
+      for (let r = 0; r < rows; r++){
+        const y0 = marginY + r * ROW_GAP;
+        const dy = y0 - rp.y;
+        if (Math.abs(Math.abs(dy) - R) > R + width) continue;
+        const base = r * cols;
+        const dir = dy >= 0 ? 1 : -1;
+        for (let c = 0; c < cols; c++){
+          const dx = c * COL_GAP - rp.x;
+          const d = Math.sqrt(dx*dx + dy*dy);
+          const ring = Math.exp(-((d - R) * (d - R)) / (width * width));
+          if (ring > 0.01) v[base + c] += dir * ring * decay * 2.6;
+        }
+      }
+    }
+
+    if (SWELL){
+      for (let r = 0; r < rows; r++){
+        const base = r * cols;
+        const phase = r * 0.35;
+        for (let c = 0; c < cols; c++){
+          v[base + c] += 0.012 * Math.sin(c * 0.045 + t * 0.6 + phase)
+                       + 0.008 * Math.sin(c * 0.012 - t * 0.35 + r * 0.12);
+        }
+      }
+    }
+
+    for (let i = 0; i < u.length; i++) u[i] += v[i];
+    mouse.vx *= 0.6; mouse.vy *= 0.6;
+  }
+
+  // bilinear sampling — lets any geometry read the water at any (x, y)
+  function sampleField(x, y, arr){
+    let gx = x / COL_GAP;
+    let gy = (y - marginY) / ROW_GAP;
+    gx = Math.max(0, Math.min(cols - 1.001, gx));
+    gy = Math.max(0, Math.min(rows - 1.001, gy));
+    const c0 = gx | 0, r0 = gy | 0;
+    const fx = gx - c0, fy = gy - r0;
+    const i = r0 * cols + c0;
+    const a = arr[i],          b = arr[i + 1];
+    const cBelow = arr[i + cols], d = arr[i + cols + 1];
+    return a * (1 - fx) * (1 - fy) + b * fx * (1 - fy)
+         + cBelow * (1 - fx) * fy + d * fx * fy;
+  }
+
+  const energyAt = (uu, vv) => Math.min(Math.abs(uu) * 0.10 + Math.abs(vv) * 0.55, 1);
+  // the house palette: calm slate blue · stirred cyan → violet → magenta
+  function paint(e, uu){
+    const hue = baseHue() - e * 95 + uu * 0.9;
+    return `hsla(${hue},${45 + e * 55}%,${22 + e * 46}%,${0.10 + e * 0.85})`;
+  }
+
+  // ======================================================================
+  // STUDIES
+  // ======================================================================
+
+  // 1 · lines — the canonical horizontal field
+  function drawLines(alpha = 1, rowStep = 1){
+    const STOPS = 7;
+    for (let r = 0; r < rows; r += rowStep){
+      const y0 = marginY + r * ROW_GAP;
+      const base = r * cols;
+      let maxE = 0;
+      const grad = ctx.createLinearGradient(0, 0, W, 0);
+      for (let s = 0; s < STOPS; s++){
+        const c = Math.min(cols - 1, Math.round(s * (cols - 1) / (STOPS - 1)));
+        const i = base + c;
+        const e = energyAt(u[i], v[i]);
+        if (e > maxE) maxE = e;
+        const hue = baseHue() - e * 95 + u[i] * 0.9;
+        grad.addColorStop(s / (STOPS - 1),
+          `hsla(${hue},${45 + e * 55}%,${22 + e * 46}%,${(0.10 + e * 0.85) * alpha})`);
+      }
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1 + maxE * 1.4;
+      ctx.beginPath();
+      ctx.moveTo(0, y0 + u[base]);
+      for (let c = 1; c < cols - 1; c++){
+        const x1 = c * COL_GAP,       y1 = y0 + u[base + c];
+        const x2 = (c + 1) * COL_GAP, y2 = y0 + u[base + c + 1];
+        ctx.quadraticCurveTo(x1, y1, (x1 + x2) / 2, (y1 + y2) / 2);
+      }
+      ctx.stroke();
+    }
+  }
+
+  // 2 · weave — warp and weft: vertical threads cross the field,
+  // displaced sideways by the same water, so the whole cloth billows
+  function drawWeave(){
+    drawLines(0.55, 2);
+    const COL_STEP = 3; // a vertical thread every 30px
+    const STOPS = 6;
+    for (let c = 0; c < cols; c += COL_STEP){
+      const x0 = c * COL_GAP;
+      let maxE = 0;
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      for (let s = 0; s < STOPS; s++){
+        const r = Math.min(rows - 1, Math.round(s * (rows - 1) / (STOPS - 1)));
+        const i = r * cols + c;
+        const e = energyAt(u[i], v[i]);
+        if (e > maxE) maxE = e;
+        const hue = baseHue() - e * 95 + u[i] * 0.9;
+        grad.addColorStop(s / (STOPS - 1),
+          `hsla(${hue},${45 + e * 55}%,${22 + e * 46}%,${(0.08 + e * 0.7) * 0.8})`);
+      }
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 1 + maxE * 1.2;
+      ctx.beginPath();
+      ctx.moveTo(x0 + u[c], marginY);
+      for (let r = 1; r < rows - 1; r++){
+        const i1 = r * cols + c,       y1 = marginY + r * ROW_GAP;
+        const i2 = (r + 1) * cols + c, y2 = marginY + (r + 1) * ROW_GAP;
+        ctx.quadraticCurveTo(x0 + u[i1], y1, (x0 + u[i1] + x0 + u[i2]) / 2, (y1 + y2) / 2);
+      }
+      ctx.stroke();
+    }
+  }
+
+  // 3 · rings — the water read as concentric circles from the centre;
+  // ripples bend the rings like a stone dropped into a still pool
+  function drawRings(){
+    const cx = W / 2, cy = H / 2;
+    const maxR = Math.hypot(W, H) / 2 + 20;
+    const GAP = 18;
+    const CHUNK = 10;
+    for (let R = GAP; R < maxR; R += GAP){
+      const SEG = Math.max(36, Math.round((Math.PI * 2 * R) / 14));
+      let px = null, py = null;
+      for (let s0 = 0; s0 < SEG; s0 += CHUNK){
+        const end = Math.min(s0 + CHUNK, SEG);
+        let eSum = 0, uSum = 0, n = 0;
+        ctx.beginPath();
+        for (let s = s0; s <= end; s++){
+          const a = (s / SEG) * Math.PI * 2;
+          const x = cx + Math.cos(a) * R;
+          const y = cy + Math.sin(a) * R;
+          const uu = sampleField(x, y, u);
+          const vv = sampleField(x, y, v);
+          eSum += energyAt(uu, vv); uSum += uu; n++;
+          const rr = R + uu * 1.3;
+          const dx = cx + Math.cos(a) * rr;
+          const dy = cy + Math.sin(a) * rr;
+          if (s === s0){
+            (px === null) ? ctx.moveTo(dx, dy) : ctx.moveTo(px, py);
+            if (px === null){ px = dx; py = dy; }
+          }
+          ctx.lineTo(dx, dy);
+          px = dx; py = dy;
+        }
+        const e = eSum / n;
+        ctx.strokeStyle = paint(e, uSum / n);
+        ctx.lineWidth = 1 + e * 1.4;
+        ctx.stroke();
+      }
+    }
+  }
+
+  // 4 · dust — the water as suspended sediment: a field of motes that
+  // drift with displacement and glow with energy
+  function drawDust(){
+    const CSTEP = 2, RSTEP = 1;
+    for (let r = 0; r < rows; r += RSTEP){
+      const y0 = marginY + r * ROW_GAP;
+      const base = r * cols;
+      for (let c = 0; c < cols; c += CSTEP){
+        const i = base + c;
+        const e = energyAt(u[i], v[i]);
+        const x = c * COL_GAP + v[i] * 2.2;   // velocity drifts the motes sideways
+        const y = y0 + u[i];
+        const size = 1 + e * 2.6;
+        const hue = baseHue() - e * 95 + u[i] * 0.9;
+        ctx.fillStyle = `hsla(${hue},${45 + e * 55}%,${26 + e * 46}%,${0.12 + e * 0.8})`;
+        ctx.fillRect(x - size / 2, y - size / 2, size, size);
+      }
+    }
+  }
+
+  const studies = { lines: () => drawLines(), weave: drawWeave, rings: drawRings, dust: drawDust };
+  let study = 'lines';
+
+  // 5 · drift — the four studies on rotation, dissolving into one another.
+  // The water never changes; only the way of seeing it does.
+  const cycleOrder = ['lines', 'weave', 'rings', 'dust'];
+  const HOLD = 10;    // seconds each study holds
+  const FADE = 2.5;   // seconds of crossfade between them
+  let cycleT = 0;
+
+  function drawCycle(){
+    cycleT += 0.016;
+    const period = HOLD + FADE;
+    const idx   = Math.floor(cycleT / period) % cycleOrder.length;
+    const local = cycleT % period;
+    const cur = cycleOrder[idx];
+    const nxt = cycleOrder[(idx + 1) % cycleOrder.length];
+    if (local < HOLD){
+      studies[cur]();
+    } else {
+      const k = (local - HOLD) / FADE;
+      const ease = k * k * (3 - 2 * k);       // smoothstep — tide-like handoff
+      ctx.globalAlpha = 1 - ease;
+      studies[cur]();
+      ctx.globalAlpha = ease;
+      studies[nxt]();
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // ---------- mode switch ----------
+  const buttons = [...document.querySelectorAll('.modes button')];
+  function setStudy(name){
+    study = name;
+    if (name === 'cycle') cycleT = 0;
+    buttons.forEach(b => b.classList.toggle('on', b.dataset.m === name));
+  }
+  buttons.forEach(b => b.addEventListener('click', e => { e.stopPropagation(); setStudy(b.dataset.m); }));
+  addEventListener('keydown', e => {
+    const map = { '1':'lines', '2':'weave', '3':'rings', '4':'dust', '5':'cycle' };
+    if (map[e.key]) setStudy(map[e.key]);
+  });
+
+  // ---------- frame ----------
+  function draw(){
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(4,7,13,0.42)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    study === 'cycle' ? drawCycle() : studies[study]();
+
+    if (mouse.in){
+      const ch = baseHue();
+      const g = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 70);
+      g.addColorStop(0, `hsla(${ch}, 85%, 82%, 0.22)`);
+      g.addColorStop(1, `hsla(${ch}, 85%, 82%, 0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(mouse.x, mouse.y, 70, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function frame(){
+    step();
+    draw();
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
+</body>
+</html>
