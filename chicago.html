@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chicago Field Journal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the Figma "Photography — Peru" spread. One 1376px measure, sections split by paper hairlines,
+   photos set in 2:1 / 1:1 / 4-up rows, collapsing to one column on phones.
+   Tokens are the Tonso Productions design system (single Paper theme by design). */
+:root {
+  --paper: #f4ecd8;
+  --paper-raised: #faf5e8;
+  --ink: #201c14;
+  --ink-muted: #4a4339;
+  --line: #c9b990;
+  --stamp: #b03920;
+  --on-stamp: #faf5e8;
+  --scrim: rgba(32, 28, 20, 0.96);
+
+  --sans: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --space-1: 4px; --space-2: 8px; --space-3: 16px; --space-4: 32px;
+  --radius-sm: 4px; --radius-md: 12px; --radius-pill: 999px;
+  --measure: 1376px;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+img { max-width: 100%; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 16px/24px var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: calc(var(--measure) + 2 * var(--space-4)); margin-inline: auto; padding-inline: var(--space-4); }
+@media (max-width: 760px) { .wrap { padding-inline: var(--space-3); } }
+
+/* type styles from tokens.json */
+.label { font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.caption { font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+.subhead { font-size: 18px; line-height: 26px; font-weight: 600; }
+h1, h2, .heading { text-wrap: balance; margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--stamp); outline-offset: 3px; border-radius: var(--radius-sm); }
+
+/* ---------- nav ---------- */
+.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding-block: var(--space-3); }
+.wordmark { font-size: 28px; line-height: 34px; font-weight: 700; letter-spacing: -0.01em; text-decoration: none; white-space: nowrap; }
+.links { display: flex; gap: var(--space-4); }
+.links span, .links a { padding-bottom: var(--space-1); text-decoration: none; }
+.links .muted { color: var(--ink-muted); }
+.links a.muted:hover { color: var(--ink); }
+.links .active { color: var(--stamp); box-shadow: inset 0 -2px 0 var(--stamp); }
+@media (max-width: 760px) {
+  .wordmark { font-size: 20px; line-height: 26px; }
+  .links { gap: var(--space-3); }
+  .links .label { font-size: 11px; letter-spacing: 0.06em; }
+}
+
+/* ---------- sections ---------- */
+section { border-top: 1px solid var(--line); padding-block: var(--space-4); scroll-margin-top: 66px; }
+section.cover { border-top: 0; }
+
+/* ---------- cover ---------- */
+.masthead { display: grid; grid-template-columns: 1fr auto 1fr; gap: var(--space-3); padding-bottom: var(--space-2); border-bottom: 1px solid var(--line); color: var(--ink-muted); }
+.masthead > :last-child { text-align: right; }
+@media (max-width: 760px) { .masthead { grid-template-columns: 1fr 1fr; } .masthead .mid { display: none; } }
+
+.title-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-3) var(--space-4); padding-block: var(--space-3); }
+.title-row h1 { font-size: clamp(96px, 15vw, 208px); line-height: 0.96; font-weight: 700; letter-spacing: -0.045em; margin-left: -0.04em; }
+.deck { max-width: 432px; display: grid; gap: var(--space-3); padding-bottom: var(--space-3); }
+.badge { justify-self: start; background: var(--stamp); color: var(--on-stamp); border-radius: var(--radius-sm); padding: var(--space-1) var(--space-3); }
+.deck p { margin: 0; font-size: 20px; line-height: 26px; font-weight: 600; text-wrap: pretty; }
+
+/* ---------- contents ---------- */
+.contents ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
+.contents a { display: grid; gap: var(--space-1); text-decoration: none; }
+.contents .num { color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+.contents a:hover .subhead { color: var(--stamp); }
+@media (max-width: 760px) { .contents ol { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); } }
+
+/* ---------- chapter opener ---------- */
+.opener { max-width: 672px; display: grid; gap: var(--space-1); margin-bottom: var(--space-4); }
+.opener .label { color: var(--ink-muted); }
+.opener h2 { font-size: clamp(40px, 5vw, 56px); line-height: 1.04; font-weight: 700; letter-spacing: -0.02em; }
+.opener p { margin: var(--space-1) 0 0; color: var(--ink-muted); max-width: 65ch; }
+
+/* ---------- photo grid ---------- */
+.row { display: grid; gap: var(--space-4); align-items: start; }
+.row + .row { margin-top: var(--space-4); }
+.r-2-1 { grid-template-columns: 912fr 432fr; }
+.r-1-1 { grid-template-columns: 1fr 1fr; }
+.r-spread { grid-template-columns: 560fr 784fr; }
+.r-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.r-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.r-tq { grid-template-columns: 432fr 912fr; }
+.stack { display: grid; gap: var(--space-4); align-content: start; min-width: 0; }
+
+figure { margin: 0; display: grid; gap: var(--space-2); min-width: 0; }
+.ph {
+  display: block; width: 100%; max-width: 100%; padding: 0; border: 0; cursor: zoom-in;
+  background: var(--paper-raised); border-radius: var(--radius-md); overflow: hidden;
+  aspect-ratio: var(--ar, 3 / 2);
+}
+.ph img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.ph:hover img { transform: scale(1.015); }
+@media (prefers-reduced-motion: reduce) { .ph img { transition: none; } .ph:hover img { transform: none; } }
+
+.ar-cover { --ar: 1376 / 760; }
+.ar-pano { --ar: 1376 / 688; }
+.ar-tall { --ar: 432 / 608; }
+.ar-wide { --ar: 912 / 512; }
+.ar-23 { --ar: 2 / 3; }
+.ar-45 { --ar: 4 / 5; }
+
+.quote { margin: 0; padding-left: var(--space-3); border-left: 2px solid var(--ink); display: grid; gap: var(--space-2); }
+.quote p { margin: 0; font-size: 28px; line-height: 34px; font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
+.quote cite { font-style: normal; color: var(--ink-muted); }
+.self-center { align-self: center; }
+
+@media (max-width: 760px) {
+  .r-2-1, .r-1-1, .r-spread, .r-tq { grid-template-columns: minmax(0, 1fr); }
+  .r-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  .r-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+  .row, .stack { gap: var(--space-3); }
+  .row + .row { margin-top: var(--space-3); }
+  .ar-cover, .ar-pano, .ar-wide { --ar: 3 / 2; }
+  .ar-tall { --ar: 4 / 5; }
+  .quote p { font-size: 22px; line-height: 28px; }
+  .keep-pair { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- footer ---------- */
+footer { border-top: 1px solid var(--line); }
+footer .wrap { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--space-3); padding-block: var(--space-4); }
+footer .links { justify-content: center; }
+footer .copy { text-align: right; }
+@media (max-width: 760px) { footer .wrap { grid-template-columns: 1fr; } footer .links { justify-content: flex-start; } footer .copy { text-align: left; } }
+
+/* ---------- viewer ---------- */
+dialog.viewer {
+  width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0;
+  background: var(--scrim); color: var(--paper);
+}
+dialog.viewer::backdrop { background: transparent; }
+.viewer-inner {
+  height: 100%; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: var(--space-3);
+  padding: calc(var(--space-3) + env(safe-area-inset-top, 0px)) var(--space-3) calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+}
+.viewer-bar { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); }
+.viewer-count { font-variant-numeric: tabular-nums; color: var(--line); }
+.viewer-stage { display: grid; place-items: center; min-height: 0; }
+.viewer-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: var(--radius-sm); }
+.viewer-foot { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); }
+.viewer-cap { font-size: 14px; line-height: 20px; }
+.vbtn {
+  font: inherit; color: var(--paper); background: transparent; cursor: pointer;
+  border: 1px solid rgba(244, 236, 216, 0.4); border-radius: var(--radius-pill);
+  min-width: 44px; height: 44px; padding: 0 var(--space-3);
+}
+.vbtn:hover { border-color: var(--paper); }
+.vnav { display: flex; gap: var(--space-2); }
+</style>
+</head>
+<body>
+<header class="nav"><div class="wrap">
+<a class="wordmark" href="index.html">Tonso Trail</a>
+<nav class="links" aria-label="Site">
+<a class="label muted" href="index.html#journey">Trail</a>
+<a class="label muted" href="https://tonso-portfolio.vercel.app/Jonathan_Ton_Resume.pdf" target="_blank" rel="noopener">Résumé</a>
+<a class="label active" href="index.html#photography" aria-current="page">Photography</a>
+</nav></div></header>
+<main id="top">
+<section class="cover"><div class="wrap">
+<div class="masthead label"><span>Photography · Issue 01</span><span class="mid">A field journal</span><span>Summer 2024</span></div>
+<div class="title-row"><h1>Chicago</h1>
+<div class="deck"><span class="badge label">No. 01</span><p>Four chapters from a summer trip to Chicago: side streets, the river, downtown and the city after dark.</p>
+<span class="caption">Photographs by Tonso Productions</span></div></div>
+<figure>
+  <button class="ph ar-cover" type="button"><img src="img/chicago/cover-trading-room.jpg" alt="Cover: the Chicago Stock Exchange Trading Room" fetchpriority="high"></button>
+  <figcaption class="caption">Cover: the Chicago Stock Exchange Trading Room</figcaption>
+</figure>
+</div></section>
+<section class="contents" aria-label="Contents"><div class="wrap"><ol>
+<li><a href="#streets"><span class="label num">01</span><span class="subhead">Street level</span><span class="caption">Courtyards, alleys and a yellow mural</span></a></li>
+<li><a href="#river"><span class="label num">02</span><span class="subhead">The river</span><span class="caption">Lift bridges, water taxis and the &#x27;L&#x27;</span></a></li>
+<li><a href="#downtown"><span class="label num">03</span><span class="subhead">Downtown</span><span class="caption">The Art Institute, the Trading Room and the Loop</span></a></li>
+<li><a href="#night"><span class="label num">04</span><span class="subhead">After dark</span><span class="caption">String lights, neon and a corner booth</span></a></li>
+</ol></div></section>
+<section id="streets">
+<div class="wrap">
+<header class="opener">
+  <span class="label">Chapter 01</span>
+  <h2>Street level</h2>
+</header>
+<div class="row r-4"><figure>
+  <button class="ph ar-45" type="button"><img src="img/chicago/street-brick-courtyard.jpg" alt="Brick courtyard patio" loading="lazy"></button>
+  <figcaption class="caption">Brick courtyard patio</figcaption>
+</figure><figure>
+  <button class="ph ar-45" type="button"><img src="img/chicago/street-alley-dinner.jpg" alt="Dinner in the alley" loading="lazy"></button>
+  <figcaption class="caption">Dinner in the alley</figcaption>
+</figure><figure>
+  <button class="ph ar-45" type="button"><img src="img/chicago/street-food-mart.jpg" alt="Food Mart and the towers" loading="lazy"></button>
+  <figcaption class="caption">Food Mart and the towers</figcaption>
+</figure><figure>
+  <button class="ph ar-45" type="button"><img src="img/chicago/street-cat-mural.jpg" alt="Yellow cat mural" loading="lazy"></button>
+  <figcaption class="caption">Yellow cat mural</figcaption>
+</figure></div>
+</div>
+</section>
+<section id="river">
+<div class="wrap">
+
+<div class="row r-spread"><figure>
+  <button class="ph ar-23" type="button"><img src="img/chicago/river-lift-bridge.jpg" alt="Lift bridge over the Chicago River" loading="lazy"></button>
+  <figcaption class="caption">Lift bridge over the Chicago River</figcaption>
+</figure><div class="stack"><header class="opener" style="margin-bottom:0">
+  <span class="label">Chapter 02</span>
+  <h2>The river</h2>
+</header><div class="row r-1-1 keep-pair"><figure>
+  <button class="ph ar-23" type="button"><img src="img/chicago/river-water-taxi.jpg" alt="Water taxi on the Chicago River" loading="lazy"></button>
+  <figcaption class="caption">Water taxi on the Chicago River</figcaption>
+</figure><figure>
+  <button class="ph ar-23" type="button"><img src="img/chicago/river-l-platform.jpg" alt="The &#x27;L&#x27; at the platform" loading="lazy"></button>
+  <figcaption class="caption">The &#x27;L&#x27; at the platform</figcaption>
+</figure></div></div></div>
+</div>
+</section>
+<section aria-label="Interlude"><div class="wrap"><figure>
+  <button class="ph ar-pano" type="button"><img src="img/chicago/interlude-gallery.jpg" alt="In the galleries" loading="lazy"></button>
+  <figcaption class="caption">In the galleries</figcaption>
+</figure></div></section>
+<section id="downtown">
+<div class="wrap">
+<header class="opener">
+  <span class="label">Chapter 03</span>
+  <h2>Downtown</h2>
+</header>
+<div class="row r-4"><figure>
+  <button class="ph ar-45" type="button"><img src="img/chicago/downtown-saic.jpg" alt="School of the Art Institute" loading="lazy"></button>
+  <figcaption class="caption">School of the Art Institute</figcaption>
+</figure><figure>
+  <button class="ph ar-45" type="button"><img src="img/chicago/downtown-trading-clock.jpg" alt="Trading Room clock" loading="lazy"></button>
+  <figcaption class="caption">Trading Room clock</figcaption>
+</figure><figure>
+  <button class="ph ar-45" type="button"><img src="img/chicago/downtown-skyline-trees.jpg" alt="Skyline through the trees" loading="lazy"></button>
+  <figcaption class="caption">Skyline through the trees</figcaption>
+</figure><figure>
+  <button class="ph ar-45" type="button"><img src="img/chicago/downtown-under-the-l.jpg" alt="Under the elevated tracks" loading="lazy"></button>
+  <figcaption class="caption">Under the elevated tracks</figcaption>
+</figure></div>
+</div>
+</section>
+<section id="night">
+<div class="wrap">
+<header class="opener">
+  <span class="label">Chapter 04</span>
+  <h2>After dark</h2>
+</header>
+<div class="row r-3"><figure>
+  <button class="ph ar-23" type="button"><img src="img/chicago/night-rooftop.jpg" alt="Rooftop dining under string lights" loading="lazy"></button>
+  <figcaption class="caption">Rooftop dining under string lights</figcaption>
+</figure><figure>
+  <button class="ph ar-23" type="button"><img src="img/chicago/night-neon-bar.jpg" alt="Neon at the arcade bar" loading="lazy"></button>
+  <figcaption class="caption">Neon at the arcade bar</figcaption>
+</figure><figure>
+  <button class="ph ar-23" type="button"><img src="img/chicago/night-corner-booth.jpg" alt="Corner booth after dark" loading="lazy"></button>
+  <figcaption class="caption">Corner booth after dark</figcaption>
+</figure></div>
+</div>
+</section>
+</main>
+<footer><div class="wrap">
+<div><div class="subhead">Tonso Trail</div><div class="caption">Photography · Issue 01 · Chicago</div></div>
+<nav class="links" aria-label="Footer">
+<a class="label muted" href="index.html#journey">Trail</a>
+<a class="label muted" href="https://tonso-portfolio.vercel.app/Jonathan_Ton_Resume.pdf" target="_blank" rel="noopener">Résumé</a>
+<a class="label active" href="index.html#photography">Photography</a>
+</nav>
+<div class="caption copy">© 2024 Tonso Productions</div>
+</div></footer>
+<dialog class="viewer" id="viewer" aria-label="Photo viewer"><div class="viewer-inner">
+<div class="viewer-bar"><span class="label viewer-count" id="viewer-count"></span><button class="vbtn label" type="button" id="viewer-close">Close</button></div>
+<div class="viewer-stage"><img id="viewer-img" alt=""></div>
+<div class="viewer-foot"><span class="viewer-cap" id="viewer-cap"></span><div class="vnav">
+<button class="vbtn" type="button" id="viewer-prev" aria-label="Previous photo">←</button>
+<button class="vbtn" type="button" id="viewer-next" aria-label="Next photo">→</button></div></div>
+</div></dialog>
+<script>
+(() => {
+  const photos = [...document.querySelectorAll('.ph img')];
+  const dlg = document.getElementById('viewer');
+  const img = document.getElementById('viewer-img');
+  const cap = document.getElementById('viewer-cap');
+  const count = document.getElementById('viewer-count');
+  let i = 0;
+
+  const show = (n) => {
+    i = (n + photos.length) % photos.length;
+    img.src = photos[i].src;
+    img.alt = photos[i].alt;
+    cap.textContent = photos[i].alt;
+    count.textContent = String(i + 1).padStart(2, '0') + ' / ' + photos.length;
+  };
+
+  photos.forEach((p, n) => {
+    p.closest('button').setAttribute('aria-label', 'Enlarge: ' + p.alt);
+    p.closest('button').addEventListener('click', () => {
+      show(n);
+      if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    });
+  });
+
+  const close = () => (dlg.open && dlg.close ? dlg.close() : dlg.removeAttribute('open'));
+  document.getElementById('viewer-close').addEventListener('click', close);
+  document.getElementById('viewer-prev').addEventListener('click', () => show(i - 1));
+  document.getElementById('viewer-next').addEventListener('click', () => show(i + 1));
+  dlg.addEventListener('click', (e) => { if (e.target.classList.contains('viewer-stage')) close(); });
+  dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') show(i + 1);
+    if (e.key === 'ArrowLeft') show(i - 1);
+  });
+})();
+</script>
+</body>
+</html>
