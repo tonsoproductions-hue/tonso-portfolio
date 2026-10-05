@@ -87,6 +87,21 @@
     .hint{ font-size:11px; letter-spacing:.22em; width:78%; text-align:center; }
   }
 
+  /* way back to the trail */
+  .back{
+    position:fixed; left:24px; top:20px; z-index:2;
+    font-weight:300; font-size:11px; letter-spacing:.18em; text-transform:lowercase;
+    color:rgba(180,205,230,.45); text-decoration:none;
+    padding:6px 2px; border-bottom:1px solid transparent;
+    cursor:pointer; transition:color .4s ease, border-color .4s ease;
+  }
+  .back:hover{ color:rgba(210,235,255,.95); border-bottom-color:rgba(210,235,255,.45); }
+  .back:focus-visible{ outline:1px solid rgba(210,235,255,.6); outline-offset:3px; }
+  @media (hover: none), (max-width: 640px){
+    .back{ left:12px; top:12px; font-size:12px; padding:10px 12px;
+      border:1px solid rgba(180,205,230,.18); border-radius:999px; }
+  }
+
   @media (prefers-reduced-motion: reduce){
     .hint{ animation:none; opacity:.5; }
   }
@@ -95,6 +110,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300&display=swap" rel="stylesheet">
 </head>
 <body>
+<a class="back" href="index.html" aria-label="Back to Tonso Trail">← back to the trail</a>
 <canvas id="c"></canvas>
 <div class="hint" id="hint">move through the water · click to drop a stone</div>
 <div class="label" id="label">waterline · studies<em>after line05x5d · chris shier</em></div>
@@ -155,7 +171,7 @@
   }
   addEventListener('pointermove', e => pointerMove(e.clientX, e.clientY));
   addEventListener('pointerdown', e => {
-    if (e.target.closest('.modes')) return;
+    if (e.target.closest('.modes') || e.target.closest('.back')) return;
     pointerMove(e.clientX, e.clientY);
     ripples.push({ x:e.clientX, y:e.clientY, t:0 });
     if (ripples.length > 8) ripples.shift();
@@ -441,6 +457,7 @@
   addEventListener('keydown', e => {
     const map = { '1':'lines', '2':'weave', '3':'rings', '4':'dust', '5':'cycle' };
     if (map[e.key]) setStudy(map[e.key]);
+    if (e.key === 'Escape') location.href = 'index.html';
   });
 
   // ---------- frame ----------
