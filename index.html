@@ -43,7 +43,8 @@ a{color:inherit}
 
 /* ---------- HERO ---------- */
 .hero{position:relative;overflow:hidden;padding-top:clamp(40px,6vw,80px);--px:0;--sy:0}
-.hero-copy{position:relative;z-index:3}
+.hero-copy{position:relative;z-index:3;pointer-events:none}
+.hero-copy>*{pointer-events:auto;width:fit-content;max-width:100%}
 .hero h1{font-size:clamp(58px,11vw,150px);margin:14px 0 18px;max-width:9ch}
 .lede{font-size:clamp(16px,1.5vw,18px);max-width:34em;margin:0 0 24px;color:var(--ink-muted)}
 .lede strong{color:var(--ink);font-weight:600}
@@ -68,7 +69,11 @@ a{color:inherit}
 @keyframes drift{from{transform:translateX(-260px)}to{transform:translateX(1700px)}}
 .march{stroke-dasharray:10 9;animation:march 1.6s linear infinite}
 @keyframes march{to{stroke-dashoffset:-19}}
-.sun{transform-box:fill-box;transform-origin:center;animation:breathe 7s ease-in-out infinite}
+.sun{transform-box:fill-box;transform-origin:center;animation:breathe 7s ease-in-out infinite;transition:filter .4s}
+/* secret waterline hotspot: the sun quietly links to the waterline studies */
+.sun-link{cursor:default;-webkit-tap-highlight-color:transparent;outline:none}
+.sun-link:hover{cursor:pointer}
+.sun-link:hover .sun,.sun-link:focus-visible .sun{filter:drop-shadow(0 0 14px rgba(72,215,196,.9)) drop-shadow(0 0 30px rgba(72,215,196,.45))}
 @keyframes breathe{50%{transform:scale(1.035)}}
 
 /* ---------- JOURNEY ---------- */
@@ -268,7 +273,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 2
     </defs>
     <!-- sun -->
     <g class="layer" style="--d:.15"><g class="rise" style="--i:0">
-      <circle class="sun" cx="1010" cy="190" r="92" fill="#b03920"/>
+      <a class="sun-link" href="waterline-studies.html" aria-label="Waterline studies"><circle class="sun" cx="1010" cy="190" r="92" fill="#b03920"/></a>
       <circle cx="1010" cy="190" r="108" fill="none" stroke="#b03920" stroke-width="2" stroke-dasharray="2 9" opacity=".7"/>
     </g></g>
     <!-- far clouds -->
