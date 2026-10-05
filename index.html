@@ -6,7 +6,7 @@
 <title>Tonso Trail</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Yuji+Boku&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Yuji+Boku&display=swap">
 <style>
 :root{
   color-scheme: light;
@@ -37,7 +37,7 @@ body{
 }
 a{color:inherit}
 :focus-visible{outline:2.5px solid var(--stamp);outline-offset:3px;border-radius:4px}
-.brush{font-family:var(--brush);font-weight:400;letter-spacing:-.01em;line-height:1.02;filter:url(#ink);-webkit-text-stroke:.6px var(--ink);text-wrap:balance}
+.brush{font-family:var(--sans);font-weight:800;letter-spacing:-.035em;line-height:1;text-wrap:balance}
 .label{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin:0}
 .wrap{max-width:1240px;margin-inline:auto;padding-inline:var(--gutter)}
 
@@ -45,7 +45,7 @@ a{color:inherit}
 .hero{position:relative;overflow:hidden;padding-top:clamp(40px,6vw,80px);--px:0;--sy:0}
 .hero-copy{position:relative;z-index:3;pointer-events:none}
 .hero-copy>*{pointer-events:auto;width:fit-content;max-width:100%}
-.hero h1{font-size:clamp(58px,11vw,150px);margin:14px 0 18px;max-width:9ch}
+.hero h1{font-size:clamp(52px,9vw,132px);margin:14px 0 18px;max-width:10ch}
 .lede{font-size:clamp(16px,1.5vw,18px);max-width:34em;margin:0 0 24px;color:var(--ink-muted)}
 .lede strong{color:var(--ink);font-weight:600}
 .facts{display:flex;flex-wrap:wrap;gap:8px 28px;margin:0 0 28px;padding:0}
@@ -79,7 +79,7 @@ a{color:inherit}
 /* ---------- JOURNEY ---------- */
 .journey{position:relative;border-top:2px solid var(--ink);
   background-image:repeating-linear-gradient(90deg,transparent 0 calc(25% - 1px),rgba(32,28,20,.05) calc(25% - 1px) 25%);}
-.journey-grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,7fr);gap:clamp(24px,4vw,64px);max-width:1320px;margin-inline:auto;padding-inline:var(--gutter)}
+.journey-grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,7fr);gap:clamp(24px,4vw,64px);max-width:2200px;margin-inline:auto;padding-inline:var(--gutter)}
 .map-sticky{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);height:calc(100vh - 40px);padding-block:20px;display:flex}
 .map-frame{flex:1;display:flex;flex-direction:column;background:var(--paper-raised);background-image:var(--noise);border:2px solid var(--ink);
   box-shadow:inset 0 0 0 5px var(--paper-raised),inset 0 0 0 6px var(--ink);padding:14px;border-radius:4px;min-height:0}
@@ -199,6 +199,19 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 2
 .hud .tip{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.55;margin-top:2px}
 .hud .nm{display:block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hud-text{width:104px;min-width:0;flex:none}
+
+/* ---------- WIDE SCREENS: map and cards grow with the window (30/70 kept) ---------- */
+@media (min-width:1500px){
+  .card{font-size:17px;padding:36px 40px}
+  .card p{max-width:72ch}
+  .stats dd{font-size:22px}
+  .card h3{font-size:clamp(46px,3.2vw,60px)}
+}
+@media (min-width:1900px){
+  .card{font-size:18px;padding:40px 48px}
+  .card p{max-width:80ch}
+  .stats dd{font-size:24px}
+}
 
 /* ---------- RESPONSIVE ---------- */
 @media (max-width:900px){
