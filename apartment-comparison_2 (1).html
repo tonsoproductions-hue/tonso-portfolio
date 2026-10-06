@@ -398,11 +398,11 @@
       <div class="afford-inputs">
         <div class="ai">
           <label>You — gross / yr</label>
-          <div class="ai-field"><span style="color:var(--faint)">$</span><input type="number" id="salary" value="110000" step="1000" min="0"></div>
+          <div class="ai-field"><span style="color:var(--faint)">$</span><input type="number" id="salary" value="" placeholder="Your salary" step="1000" min="0" aria-label="Your gross salary per year"></div>
         </div>
         <div class="ai">
           <label>Partner — gross / yr</label>
-          <div class="ai-field"><span style="color:var(--faint)">$</span><input type="number" id="salary2" value="0" step="1000" min="0"></div>
+          <div class="ai-field"><span style="color:var(--faint)">$</span><input type="number" id="salary2" value="" placeholder="Optional" step="1000" min="0" aria-label="Partner gross salary per year"></div>
         </div>
         <div class="ai">
           <label>Investing <span id="inv-pct">15%</span> (each)</label>
@@ -818,6 +818,7 @@ function renderAfford(){
     <div class="wf hl"><div class="wf-k">${scope} take-home / mo</div><div class="wf-v">${fmt$(thMo)}</div><div class="wf-s">${fmt$(net)}/yr</div></div>
     <div class="wf hl"><div class="wf-k">After investing ${pct}%</div><div class="wf-v">${fmt$(availMo)}</div><div class="wf-s">−${fmt$(invMo)}/mo invested</div></div>`;
 
+  const noIncome = gross===0;                                // nothing entered yet: show rent shares, hold the % maths
   const sorted=visU().slice().sort((a,b)=>myCost(a)-myCost(b));
   if(!sorted.length){ document.getElementById('aff-table').innerHTML='<div style="padding:18px;color:var(--muted);font-size:13px">No visible options — restore some from the Shortlist filter.</div>'; document.getElementById('aff-note').innerHTML=''; return; }
   const rows=sorted.map(u=>{
@@ -826,10 +827,10 @@ function renderAfford(){
       <div class="aff-nm"><span class="dot" style="background:${B[u.b].color}"></span><span class="nmt">${u.name}</span></div>
       <div class="aff-share">${fmt$2(share)}</div>
       <div class="aff-pct">
-        <div class="pct-track"><div class="pct-fill" style="width:${Math.min(100,p)}%;background:${pctColor(p)}"></div></div>
-        <span class="pct-n" style="color:${pctColor(p)}">${p.toFixed(1)}%</span>
+        <div class="pct-track"><div class="pct-fill" style="width:${noIncome?0:Math.min(100,p)}%;background:${pctColor(p)}"></div></div>
+        <span class="pct-n" style="color:${noIncome?'var(--muted)':pctColor(p)}">${noIncome?'—':p.toFixed(1)+'%'}</span>
       </div>
-      <div class="aff-left" style="color:${left<0?'var(--red)':'var(--green)'}">${left<0?'−'+fmt$(-left):fmt$(left)}</div>
+      <div class="aff-left" style="color:${noIncome?'var(--muted)':left<0?'var(--red)':'var(--green)'}">${noIncome?'—':left<0?'−'+fmt$(-left):fmt$(left)}</div>
     </div>`;
   }).join("");
   const shareLabel = household ? 'Full rent/mo' : `Your ${splitPct}% /mo`;
@@ -840,6 +841,13 @@ function renderAfford(){
   document.getElementById('aff-table').querySelectorAll('.aff-r').forEach(r=>{
     r.addEventListener('click',()=>selectUnit(+r.dataset.i));
   });
+
+  if(noIncome){
+    document.getElementById('aff-note').innerHTML = household
+      ? 'Enter one or both salaries above to see how each option lands against household take-home pay.'
+      : 'Enter your salary above to see what share of your take-home each option takes and what you have left after investing.';
+    return;
+  }
 
   // dynamic insight
   const cheap=sorted[0], dear=sorted[sorted.length-1];
