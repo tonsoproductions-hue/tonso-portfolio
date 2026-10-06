@@ -178,7 +178,9 @@ a{color:inherit}
 .issue:hover{transform:translate(-2px,-2px);box-shadow:9px 9px 0 rgba(32,28,20,.16)}
 .issue img{display:block;width:100%;height:100%;min-height:260px;object-fit:cover;border-right:2px solid var(--ink)}
 .issue-copy{display:flex;flex-direction:column;justify-content:center;gap:10px;padding:clamp(20px,3vw,40px)}
-.issue-copy h3{font-size:clamp(56px,7vw,96px);margin:0}
+.issue-copy{container-type:inline-size}
+/* size the issue title to its own column so longer names like "Chicago" always fit on one line */
+.issue-copy h3{font-size:clamp(40px,21cqi,96px);margin:0;white-space:nowrap}
 .issue-copy p{margin:0;color:var(--ink-muted);max-width:30em}
 .issue-copy .chapters{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
 .issue .more{align-self:flex-start;margin-top:8px}
