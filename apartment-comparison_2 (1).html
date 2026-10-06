@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Houston Lease Comparison · Cost & Commute to Texas Children's</title>
+<title>Houston Lease Comparison</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -96,13 +96,6 @@
   .pk span{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid var(--line)}
   .pk .y{color:var(--teal);border-color:rgba(63,125,110,.4)}
   .pk .n{color:var(--faint);opacity:.6}
-  .route-link{grid-column:1/-1;display:flex;align-items:center;gap:8px;margin-top:4px;
-    font-family:var(--mono);font-size:12px;color:var(--teal);text-decoration:none;
-    background:rgba(63,125,110,.08);border:1px solid rgba(63,125,110,.28);
-    padding:9px 13px;border-radius:9px;transition:.16s}
-  .route-link:hover{background:rgba(63,125,110,.16);border-color:var(--teal)}
-  .route-link span:first-child{font-size:14px}
-  .route-link .rl-sub{color:var(--faint);font-size:10.5px;margin-left:auto}
 
   .map-col{position:sticky;top:20px}
   .map-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
@@ -120,7 +113,6 @@
   .legend .li{display:flex;align-items:center;gap:6px;font-family:var(--mono)}
   .legend .sw{width:11px;height:11px;border-radius:50%}
   .legend .swl{width:18px;height:0;border-top:2px dashed var(--faint)}
-  .tch-mark{display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-family:var(--mono)}
 
   /* ---- shortlist filter ---- */
   .shortlist{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px 18px;margin-bottom:24px}
@@ -165,7 +157,6 @@
   .cc-pros .tag{font-family:var(--mono);font-size:9px;padding:1px 6px;border-radius:4px;flex:none}
   .cc-pros .tag.up{background:rgba(79,157,82,.16);color:var(--green)}
   .cc-pros .tag.dn{background:rgba(191,96,72,.16);color:var(--red)}
-  .cc-route{font-family:var(--mono);font-size:11px;color:var(--teal);text-decoration:none;margin-top:2px}
 
   footer{margin-top:30px;border-top:1px solid var(--line);padding-top:18px;font-size:11.5px;color:var(--faint);font-family:var(--mono);line-height:1.7}
   footer b{color:var(--muted);font-weight:500}
@@ -300,13 +291,12 @@
   <header>
     <div class="title-block">
       <div class="eyebrow">Lease Decision Tool · Houston Inner Loop</div>
-      <h1>Cost &amp; commute, <em>side by side</em></h1>
-      <div class="sub">Eleven unit options ranked on net monthly cost — with each building's straight-line route to Texas Children's Hospital plotted live. Tap any option to focus it on the map.</div>
+      <h1>Cost &amp; value, <em>side by side</em></h1>
+      <div class="sub">Eleven unit options ranked on net monthly cost, with every building plotted on the map. Tap any option to focus it on the map.</div>
     </div>
     <div class="stats">
       <div class="stat"><div class="k">Cheapest / person</div><div class="v" id="s-pp">—</div><div class="nm" id="s-pp-nm"></div></div>
       <div class="stat"><div class="k">Lowest total</div><div class="v" id="s-tot">—</div><div class="nm" id="s-tot-nm"></div></div>
-      <div class="stat"><div class="k">Closest to TCH</div><div class="v" id="s-dist">—</div><div class="nm" id="s-dist-nm"></div></div>
     </div>
   </header>
 
@@ -333,7 +323,7 @@
 
   <!-- 1) Ranked options + route map -->
   <section class="sec" id="sec-ranked">
-    <button class="sec-head" type="button"><span class="sec-title">Ranked options</span><span class="sec-meta">browse list · route map</span><span class="chev"></span></button>
+    <button class="sec-head" type="button"><span class="sec-title">Ranked options</span><span class="sec-meta">browse list · map</span><span class="chev"></span></button>
     <div class="sec-body">
       <div class="layout">
         <section>
@@ -342,21 +332,18 @@
             <button class="chip on" data-metric="pp">Cost / person</button>
             <button class="chip" data-metric="cost">Total cost</button>
             <button class="chip" data-metric="psf">$ / sq ft</button>
-            <button class="chip" data-metric="dist">Distance to TCH</button>
           </div>
           <div class="list" id="list"></div>
         </section>
         <div class="map-col">
           <div class="map-card">
             <div class="map-head">
-              <h2>Routes to Texas Children's</h2>
-              <span class="hint">6621 Fannin St · Med Center</span>
+              <h2>Where they are</h2>
+              <span class="hint">Houston Inner Loop</span>
             </div>
             <div id="map"></div>
             <div class="legend">
-              <span class="li"><span class="sw" style="background:var(--red)"></span>Texas Children's Hospital</span>
-              <span class="li"><span class="swl"></span>straight-line path</span>
-              <span class="li" style="color:var(--faint)">click a card to highlight a route</span>
+              <span class="li" style="color:var(--faint)">click a card to focus its building</span>
             </div>
           </div>
         </div>
@@ -428,13 +415,11 @@
 
   <footer>
     <b>Source</b> — pricing pulled from your “Sheet3” comparison tab (base rent, concessions, est. fees → Total Cost &amp; per-person at a 2-way split).<br>
-    <b>Distances</b> — straight-line ("as the crow flies") from each building to TCH's main campus; the dashed map lines are direct point-to-point, not road routes. For real drive times, use the <span style="color:var(--teal)">↗ Live driving route</span> link on each card — it opens Google Maps directions from that exact address to the hospital with current traffic.<br>
     <b>Parking key</b> — G garage · S street · V visitor.
   </footer>
 </div>
 
 <script>
-const TCH = {name:"Texas Children's Hospital", lat:29.7077934, lng:-95.401314};
 
 const B = {
   maxwell:    {lat:29.7634343, lng:-95.4115092, area:"Rice Military / Memorial", color:"#c08a2e", addr:"5004 Memorial Dr, Houston, TX 77007"},
@@ -447,8 +432,6 @@ const B = {
   scotland:   {lat:29.7642926, lng:-95.4129839, area:"Rice Military",             color:"#9a8a3a", addr:"5130 Scotland St, Houston, TX 77007"},
   modera:     {lat:29.7588457, lng:-95.3984207, area:"Buffalo Bayou / Waugh",     color:"#a85bb0", addr:"716 Waugh Dr, Houston, TX 77019"},
 };
-const TCH_DEST = "Texas Children's Hospital, 6621 Fannin St, Houston, TX 77030";
-const routeURL = u => `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(B[u.b].addr)}&destination=${encodeURIComponent(TCH_DEST)}`;
 
 const U = [
   {name:"Maxwell Memorial",      b:"maxwell",    unit:"439",  beds:"1 bd",       sqft:1079, base:2495,   total:2609,    weeks:5,  after:2349.10, cost:2549.10, pp:1274.55, top:"Open floor plan",                  worst:"Only a 1-bedroom",          pk:"YYY", jton:1, dcao:1, loc:2},
@@ -472,18 +455,6 @@ const U = [
   {name:"5130 Scotland (House)", b:"scotland",   unit:"D",    beds:"3 bd",       sqft:1505, base:2450,   total:2450,    weeks:0,  after:2450,    cost:2700,    pp:1350,    top:"A whole house — most space",      worst:"Outdated finishes, no light",pk:"YYY", jton:0, dcao:0, loc:1},
 ];
 
-// ---- distance (haversine, miles) + rough drive estimate ----
-function miles(a,b){
-  const R=3958.8, toR=Math.PI/180;
-  const dLat=(b.lat-a.lat)*toR, dLng=(b.lng-a.lng)*toR;
-  const la1=a.lat*toR, la2=b.lat*toR;
-  const h=Math.sin(dLat/2)**2 + Math.cos(la1)*Math.cos(la2)*Math.sin(dLng/2)**2;
-  return R*2*Math.asin(Math.sqrt(h));
-}
-U.forEach(u=>{
-  const bd=B[u.b];
-  u.dist = miles(bd, TCH);
-});
 // Total Cost (no specials) and per person (no specials) from Sheet3 rows 12 & 15, in U order
 const NO_SPECIALS=[
   [2809.00,1404.50],[2713.66,1356.83],[2700.00,1350.00],[2678.76,1339.38],[2728.00,1364.00],
@@ -505,23 +476,19 @@ const fmt$ = n => "$"+n.toLocaleString('en-US',{minimumFractionDigits:0,maximumF
 const fmt$2 = n => "$"+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 
 function renderStats(){
-  const V=visU(); if(!V.length){['s-pp','s-tot','s-dist'].forEach(id=>document.getElementById(id).textContent='—');return;}
+  const V=visU(); if(!V.length){['s-pp','s-tot'].forEach(id=>document.getElementById(id).textContent='—');return;}
   const byPP=[...V].sort((a,b)=>ppOf(a)-ppOf(b))[0];
   const byTot=[...V].sort((a,b)=>costOf(a)-costOf(b))[0];
-  const byDist=[...V].sort((a,b)=>a.dist-b.dist)[0];
   document.getElementById('s-pp').innerHTML = fmt$2(ppOf(byPP))+" <small>/mo</small>";
   document.getElementById('s-pp-nm').textContent = byPP.name;
   document.getElementById('s-tot').innerHTML = fmt$2(costOf(byTot))+" <small>/mo</small>";
   document.getElementById('s-tot-nm').textContent = byTot.name;
-  document.getElementById('s-dist').innerHTML = byDist.dist.toFixed(1)+" <small>mi</small>";
-  document.getElementById('s-dist-nm').textContent = byDist.name;
 }
 
 const METRICS = {
   pp:   {label:"Cost / person", get:u=>ppOf(u),   txt:u=>fmt$2(ppOf(u)),  unit:"/person", asc:true},
   cost: {label:"Total cost",    get:u=>costOf(u), txt:u=>fmt$2(costOf(u)),unit:"total/mo",asc:true},
   psf:  {label:"$ / sq ft",     get:u=>psfOf(u),  txt:u=>{const v=psfOf(u);return v?"$"+v.toFixed(2):"—";}, unit:"per sq ft", asc:true},
-  dist: {label:"Dist. to TCH",  get:u=>u.dist, txt:u=>u.dist.toFixed(1)+" mi", unit:"to hospital", asc:true},
 };
 
 let metric="pp", selected=null;
@@ -579,12 +546,8 @@ function render(){
         <div class="d"><div class="dk">Weeks free</div><div class="dv">${u.weeks?(useSpecials?u.weeks:u.weeks+' (off)'):"—"}</div></div>
         <div class="d"><div class="dk">$/sq ft</div><div class="dv">${psfOf(u)?"$"+psfOf(u).toFixed(2):"—"}</div></div>
         <div class="d"><div class="dk">Sq ft</div><div class="dv">${u.sqft?u.sqft.toLocaleString():"—"}</div></div>
-        <div class="d"><div class="dk">Straight-line</div><div class="dv">${u.dist.toFixed(1)} mi</div></div>
         <div class="d"><div class="dk">Address</div><div class="dv" style="font-size:11px">${B[u.b].addr.split(',')[0]}</div></div>
         ${pkHtml}
-        <a class="route-link" href="${routeURL(u)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
-          <span>↗</span> Live driving route to Texas Children's <span class="rl-sub">(opens Google Maps)</span>
-        </a>
         <div class="notes">${notes}</div>
       </div>
       <div class="bar-bg"></div><div class="bar-fill" style="width:${fillW}%;background:${col}"></div>`;
@@ -594,15 +557,13 @@ function render(){
 }
 
 // ---- map ----
-let map, lines={}, markers={};
+let map, markers={};
 function popupHTML(k){
   const bd=B[k], us=U.filter(u=>u.b===k);
   const cheapest=us.slice().sort((a,b)=>ppOf(a)-ppOf(b))[0];
   const rows=us.map(u=>`<div class="pop-row"><span>${u.name.replace(bd.area,'')||u.name}</span><b>${fmt$2(ppOf(u))}/ea</b></div>`).join("");
   return `<div class="pop-nm">${cheapest.name.split(' · ')[0].split(' (')[0]}</div>
-    ${rows}
-    <div class="pop-row" style="margin-top:6px;border-top:1px solid var(--line);padding-top:5px"><span>to TCH</span><b>${cheapest.dist.toFixed(1)} mi straight-line</b></div>
-    <a href="${routeURL(cheapest)}" target="_blank" rel="noopener" style="display:block;margin-top:7px;font-family:var(--mono);font-size:11px;color:var(--teal);text-decoration:none">↗ Live driving route</a>`;
+    ${rows}`;
 }
 function updatePopups(){ Object.keys(markers).forEach(k=>markers[k].setPopupContent(popupHTML(k))); }
 function initMap(){
@@ -610,13 +571,6 @@ function initMap(){
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
     attribution:'&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:19
   }).addTo(map);
-
-  // faint route lines for every building -> TCH
-  Object.keys(B).forEach(k=>{
-    const bd=B[k];
-    lines[k]=L.polyline([[bd.lat,bd.lng],[TCH.lat,TCH.lng]],
-      {color:bd.color,weight:1.4,opacity:.32,dashArray:'4 6'}).addTo(map);
-  });
 
   // building markers
   Object.keys(B).forEach(k=>{
@@ -634,14 +588,7 @@ function initMap(){
     markers[k]=mk;
   });
 
-  // TCH marker
-  const tchIcon=L.divIcon({className:'',html:
-    `<div class="tch-mark" style="width:34px;height:34px;border-radius:50%;background:var(--red);border:3px solid #ffffff;box-shadow:0 0 0 2px var(--red),0 4px 12px rgba(60,50,40,.28);font-size:15px">＋</div>`,
-    iconSize:[34,34],iconAnchor:[17,17]});
-  L.marker([TCH.lat,TCH.lng],{icon:tchIcon,zIndexOffset:1000}).addTo(map)
-    .bindPopup(`<div class="pop-nm">Texas Children's Hospital</div><div class="pop-row"><span>6621 Fannin St</span><b>Med Center</b></div>`);
-
-  const grp=L.featureGroup([...Object.values(markers), L.marker([TCH.lat,TCH.lng])]);
+  const grp=L.featureGroup(Object.values(markers));
   map.fitBounds(grp.getBounds().pad(0.18));
 }
 
@@ -650,13 +597,11 @@ function paintMap(){
   if(!map) return;
   Object.keys(B).forEach(k=>{
     const vis=bldgVisible(k);
-    lines[k].setStyle({weight:1.4,opacity:vis?.32:0,dashArray:'4 6'});
     markers[k].setStyle({radius:8,weight:2,opacity:vis?1:0,fillOpacity:vis?1:0});
     if(markers[k]._path) markers[k]._path.style.pointerEvents = vis?'':'none';
   });
   if(selected!=null && isVis(selected) && bldgVisible(U[selected].b)){
     const k=U[selected].b;
-    lines[k].setStyle({weight:3.4,opacity:1,dashArray:null}).bringToFront();
     markers[k].setStyle({radius:11,weight:3,opacity:1,fillOpacity:1}).bringToFront();
   }
 }
@@ -669,8 +614,7 @@ function selectUnit(i, fly=true){
   if(selected!=null){
     const u=U[selected], k=u.b, bd=B[k];
     if(fly){
-      const b=L.latLngBounds([[bd.lat,bd.lng],[TCH.lat,TCH.lng]]);
-      map.flyToBounds(b.pad(0.4),{duration:.6});
+      map.flyTo([bd.lat,bd.lng],Math.max(map.getZoom(),14),{duration:.6});
     }
     markers[k].openPopup();
     const sel=document.querySelector('.card.sel');
@@ -754,7 +698,7 @@ function renderWRank(){
       <div class="wr-rank">${i+1}</div>
       <div class="wr-mid">
         <div class="wr-nm"><span class="dot" style="background:${col}"></span>${u.name}${u.est?'<span class="est-badge">est. inputs</span>':''}</div>
-        <div class="wr-meta">${B[u.b].area} · ${u.beds} · ${fmt$2(ppOf(u))}/person · ${u.dist.toFixed(1)} mi to TCH</div>
+        <div class="wr-meta">${B[u.b].area} · ${u.beds} · ${fmt$2(ppOf(u))}/person</div>
         <div class="subbars">${subs}</div>
       </div>
       <div class="wr-score"><div class="ws-v">${Math.round(row.composite)}</div><div class="ws-l">score</div></div>`;
@@ -939,7 +883,7 @@ function renderCompare(){
   const items=compareSet.map(i=>U[i]);
   const minCost=Math.min(...items.map(costOf)), minPP=Math.min(...items.map(ppOf));
   const minPsf=Math.min(...items.map(u=>psfOf(u)??Infinity)), maxSqft=Math.max(...items.map(u=>u.sqft||0));
-  const minDist=Math.min(...items.map(u=>u.dist)), maxWeeks=Math.max(...items.map(u=>u.weeks||0));
+  const maxWeeks=Math.max(...items.map(u=>u.weeks||0));
   const scores=items.map(u=>u.rankable?compositeNow(u):null);
   const maxScore=Math.max(...scores.filter(s=>s!=null), -1);
   const row=(k,v,best)=>`<div class="cc-row"><span class="k">${k}</span><span class="v${best?' best':''}">${v}</span></div>`;
@@ -957,7 +901,6 @@ function renderCompare(){
         ${row('$ / sq ft',psf?'$'+psf.toFixed(2):'—',psf&&psf===minPsf)}
         ${row('Sq ft',u.sqft?u.sqft.toLocaleString():'—',u.sqft&&u.sqft===maxSqft)}
         ${row('Weeks free',u.weeks||'—',u.weeks&&u.weeks===maxWeeks)}
-        ${row('To TCH',u.dist.toFixed(1)+' mi',u.dist===minDist)}
         ${row('Parking G/S/V',pkTxt,false)}
         ${row('Location rank',u.loc!=null?('#'+u.loc+(u.est?'*':'')):'—',false)}
         ${row('Top-3 votes',String((u.jton||0)+(u.dcao||0)),false)}
@@ -966,7 +909,6 @@ function renderCompare(){
       <div class="cc-pros">
         ${u.top?`<div class="pl"><span class="tag up">＋</span><span>${u.top}</span></div>`:''}
         ${u.worst?`<div class="pl"><span class="tag dn">－</span><span>${u.worst}</span></div>`:''}
-        <a href="${routeURL(u)}" target="_blank" rel="noopener" class="cc-route">↗ Route to TCH</a>
       </div>
     </div>`;
   }).join("");
