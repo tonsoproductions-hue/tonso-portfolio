@@ -120,7 +120,7 @@
   <button data-m="rings">3 · rings</button>
   <button data-m="dust">4 · dust</button>
   <button data-m="cycle">5 · drift</button>
-  <button id="bubble-btn" class="on" aria-pressed="true">6 · bubbles</button>
+  <button data-m="bubbles">6 · bubbles</button>
 </div>
 
 <script>
@@ -285,7 +285,6 @@
   // into a small ripple. A few drift up on their own; hold to blow a stream.
   // ======================================================================
   const bubbles = [];
-  let bubblesOn = true;
   let holding = null;
   const MAX_BUBBLES = isSmall ? 70 : 140;
 
@@ -302,9 +301,9 @@
   }
 
   function stepBubbles(){
-    if (!bubblesOn){ bubbles.length = 0; return; }
     // ambient: an occasional bubble from the floor
-    if (!reduceMotion && Math.random() < (isSmall ? 0.035 : 0.06)) spawnBubble(Math.random() * W, H + 12, 3 + Math.random() * 5);
+    // ambient risers belong to the bubbles study; holding blows a stream in any study
+    if (study === 'bubbles' && !reduceMotion && Math.random() < (isSmall ? 0.05 : 0.09)) spawnBubble(Math.random() * W, H + 12, 3 + Math.random() * 5);
     // held pointer: a stream after a short press
     if (holding && performance.now() - holding.t0 > 220){
       const n = Math.random() < 0.5 ? 2 : 1;
@@ -507,12 +506,56 @@
     }
   }
 
-  const studies = { lines: () => drawLines(), weave: drawWeave, rings: drawRings, dust: drawDust };
+  // 6 · bubbles — the water seen as a sea of bubbles packed in rows. They ride the
+  // swell, crowd together on the crests and swell up with energy, so every
+  // wave rolls through the screen as a band of larger, brighter bubbles.
+  const TAU = Math.PI * 2;
+  function drawBubbleSea(){
+    const LEVELS = 8;
+    const rings = Array.from({ length: LEVELS }, () => new Path2D());
+    const shine = new Path2D();
+    const baseR = ROW_GAP * 0.2;
+    for (let r = 0; r < rows; r++){
+      const y0 = marginY + r * ROW_GAP;
+      const base = r * cols;
+      for (let c = r & 1; c < cols; c += 2){               // offset every other row: hex packing
+        const i = base + c;
+        const e = energyAt(u[i], v[i]);
+        const x = c * COL_GAP + v[i] * 1.8 * SCALE;          // velocity carries them along the wave
+        const y = y0 + u[i] * SCALE;
+        const rad = baseR * (0.6 + e * 1.5);
+        const L = Math.min(LEVELS - 1, (e * LEVELS) | 0);
+        rings[L].moveTo(x + rad, y);
+        rings[L].arc(x, y, rad, 0, TAU);
+        if (e > 0.45){
+          const hr = rad * 0.24, hx = x - rad * 0.38, hy = y - rad * 0.38;
+          shine.moveTo(hx + hr, hy);
+          shine.arc(hx, hy, hr, 0, TAU);
+        }
+      }
+    }
+    const hue = baseHue();
+    for (let L = 0; L < LEVELS; L++){
+      const e = (L + 0.5) / LEVELS;
+      const h = hue - e * 95;
+      if (L >= 3){
+        ctx.fillStyle = `hsla(${h},${45 + e * 55}%,${30 + e * 40}%,${0.015 + e * 0.035})`;
+        ctx.fill(rings[L]);
+      }
+      ctx.strokeStyle = `hsla(${h},${45 + e * 55}%,${26 + e * 46}%,${0.1 + e * 0.5})`;
+      ctx.lineWidth = 0.8 + e * 0.6 * SCALE;
+      ctx.stroke(rings[L]);
+    }
+    ctx.fillStyle = 'rgba(235,245,255,0.28)';
+    ctx.fill(shine);
+  }
+
+  const studies = { lines: () => drawLines(), weave: drawWeave, rings: drawRings, dust: drawDust, bubbles: drawBubbleSea };
   let study = 'lines';
 
   // 5 · drift — the four studies on rotation, dissolving into one another.
   // The water never changes; only the way of seeing it does.
-  const cycleOrder = ['lines', 'weave', 'rings', 'dust'];
+  const cycleOrder = ['lines', 'weave', 'rings', 'dust', 'bubbles'];
   const HOLD = 10;    // seconds each study holds
   const FADE = 2.5;   // seconds of crossfade between them
   let cycleT = 0;
@@ -546,19 +589,10 @@
   }
   buttons.forEach(b => b.addEventListener('click', e => { e.stopPropagation(); setStudy(b.dataset.m); }));
   addEventListener('keydown', e => {
-    const map = { '1':'lines', '2':'weave', '3':'rings', '4':'dust', '5':'cycle' };
+    const map = { '1':'lines', '2':'weave', '3':'rings', '4':'dust', '5':'cycle', '6':'bubbles' };
     if (map[e.key]) setStudy(map[e.key]);
-    if (e.key === '6' || e.key === 'b') toggleBubbles();
     if (e.key === 'Escape') location.href = 'index.html';
   });
-
-  const bubbleBtn = document.getElementById('bubble-btn');
-  function toggleBubbles(){
-    bubblesOn = !bubblesOn;
-    bubbleBtn.classList.toggle('on', bubblesOn);
-    bubbleBtn.setAttribute('aria-pressed', String(bubblesOn));
-  }
-  bubbleBtn.addEventListener('click', e => { e.stopPropagation(); toggleBubbles(); });
 
   // ---------- frame ----------
   function draw(){
