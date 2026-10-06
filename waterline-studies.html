@@ -139,8 +139,11 @@
   // ======================================================================
 
   // coarser field + capped resolution on phones keeps the framerate smooth
-  const ROW_GAP = isSmall ? 22 : 16;
-  const COL_GAP = isSmall ? 14 : 10;
+  // SCALE shrinks every on-screen size (spacing, reach, ripples, strokes, wave height) by 30%:
+  // a finer, tighter field whose curves read smoother. Physics constants are per-cell, so the feel of the water is unchanged.
+  const SCALE = 0.7;
+  const ROW_GAP = (isSmall ? 22 : 16) * SCALE;
+  const COL_GAP = (isSmall ? 14 : 10) * SCALE;
   let W, H, DPR, rows, cols, marginY;
   let u, v;
 
@@ -189,7 +192,7 @@
   const WAVE   = 0.16;
   const SPRING = 0.010;
   const DAMP   = 0.965;
-  const TOUCH_R = isTouch ? 160 : 130;
+  const TOUCH_R = (isTouch ? 160 : 130) * SCALE;
   const SWELL  = reduceMotion ? 0 : 1;
 
   let t = 0;
@@ -235,8 +238,8 @@
     for (let k = ripples.length - 1; k >= 0; k--){
       const rp = ripples[k];
       rp.t += 0.016;
-      const R = rp.t * 340;
-      const width = 60;
+      const R = rp.t * 340 * SCALE;
+      const width = 60 * SCALE;
       const decay = Math.exp(-rp.t * 1.4);
       if (decay < 0.02){ ripples.splice(k, 1); continue; }
       for (let r = 0; r < rows; r++){
@@ -313,12 +316,12 @@
           `hsla(${hue},${45 + e * 55}%,${22 + e * 46}%,${(0.10 + e * 0.85) * alpha})`);
       }
       ctx.strokeStyle = grad;
-      ctx.lineWidth = 1 + maxE * 1.4;
+      ctx.lineWidth = 1 + maxE * 1.4 * SCALE;
       ctx.beginPath();
-      ctx.moveTo(0, y0 + u[base]);
+      ctx.moveTo(0, y0 + u[base] * SCALE);
       for (let c = 1; c < cols - 1; c++){
-        const x1 = c * COL_GAP,       y1 = y0 + u[base + c];
-        const x2 = (c + 1) * COL_GAP, y2 = y0 + u[base + c + 1];
+        const x1 = c * COL_GAP,       y1 = y0 + u[base + c] * SCALE;
+        const x2 = (c + 1) * COL_GAP, y2 = y0 + u[base + c + 1] * SCALE;
         ctx.quadraticCurveTo(x1, y1, (x1 + x2) / 2, (y1 + y2) / 2);
       }
       ctx.stroke();
@@ -345,13 +348,13 @@
           `hsla(${hue},${45 + e * 55}%,${22 + e * 46}%,${(0.08 + e * 0.7) * 0.8})`);
       }
       ctx.strokeStyle = grad;
-      ctx.lineWidth = 1 + maxE * 1.2;
+      ctx.lineWidth = 1 + maxE * 1.2 * SCALE;
       ctx.beginPath();
-      ctx.moveTo(x0 + u[c], marginY);
+      ctx.moveTo(x0 + u[c] * SCALE, marginY);
       for (let r = 1; r < rows - 1; r++){
         const i1 = r * cols + c,       y1 = marginY + r * ROW_GAP;
         const i2 = (r + 1) * cols + c, y2 = marginY + (r + 1) * ROW_GAP;
-        ctx.quadraticCurveTo(x0 + u[i1], y1, (x0 + u[i1] + x0 + u[i2]) / 2, (y1 + y2) / 2);
+        ctx.quadraticCurveTo(x0 + u[i1] * SCALE, y1, x0 + (u[i1] + u[i2]) * SCALE / 2, (y1 + y2) / 2);
       }
       ctx.stroke();
     }
@@ -362,10 +365,10 @@
   function drawRings(){
     const cx = W / 2, cy = H / 2;
     const maxR = Math.hypot(W, H) / 2 + 20;
-    const GAP = 18;
+    const GAP = 18 * SCALE;
     const CHUNK = 10;
     for (let R = GAP; R < maxR; R += GAP){
-      const SEG = Math.max(36, Math.round((Math.PI * 2 * R) / 14));
+      const SEG = Math.max(36, Math.round((Math.PI * 2 * R) / (14 * SCALE)));
       let px = null, py = null;
       for (let s0 = 0; s0 < SEG; s0 += CHUNK){
         const end = Math.min(s0 + CHUNK, SEG);
@@ -378,7 +381,7 @@
           const uu = sampleField(x, y, u);
           const vv = sampleField(x, y, v);
           eSum += energyAt(uu, vv); uSum += uu; n++;
-          const rr = R + uu * 1.3;
+          const rr = R + uu * 1.3 * SCALE;
           const dx = cx + Math.cos(a) * rr;
           const dy = cy + Math.sin(a) * rr;
           if (s === s0){
@@ -390,7 +393,7 @@
         }
         const e = eSum / n;
         ctx.strokeStyle = paint(e, uSum / n);
-        ctx.lineWidth = 1 + e * 1.4;
+        ctx.lineWidth = 1 + e * 1.4 * SCALE;
         ctx.stroke();
       }
     }
@@ -406,9 +409,9 @@
       for (let c = 0; c < cols; c += CSTEP){
         const i = base + c;
         const e = energyAt(u[i], v[i]);
-        const x = c * COL_GAP + v[i] * 2.2;   // velocity drifts the motes sideways
-        const y = y0 + u[i];
-        const size = 1 + e * 2.6;
+        const x = c * COL_GAP + v[i] * 2.2 * SCALE;   // velocity drifts the motes sideways
+        const y = y0 + u[i] * SCALE;
+        const size = Math.max(1, (1 + e * 2.6) * SCALE);
         const hue = baseHue() - e * 95 + u[i] * 0.9;
         ctx.fillStyle = `hsla(${hue},${45 + e * 55}%,${26 + e * 46}%,${0.12 + e * 0.8})`;
         ctx.fillRect(x - size / 2, y - size / 2, size, size);
@@ -473,12 +476,12 @@
 
     if (mouse.in){
       const ch = baseHue();
-      const g = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 70);
+      const g = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 70 * SCALE);
       g.addColorStop(0, `hsla(${ch}, 85%, 82%, 0.22)`);
       g.addColorStop(1, `hsla(${ch}, 85%, 82%, 0)`);
       ctx.fillStyle = g;
       ctx.beginPath();
-      ctx.arc(mouse.x, mouse.y, 70, 0, Math.PI * 2);
+      ctx.arc(mouse.x, mouse.y, 70 * SCALE, 0, Math.PI * 2);
       ctx.fill();
     }
   }
