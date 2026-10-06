@@ -112,7 +112,7 @@
 <body>
 <a class="back" href="index.html" aria-label="Back to Tonso Trail">← back to the trail</a>
 <canvas id="c"></canvas>
-<div class="hint" id="hint">move through the water · click to drop a stone</div>
+<div class="hint" id="hint">move through the water · click to drop a stone · hold to blow bubbles</div>
 <div class="label" id="label">waterline · studies<em>after line05x5d · chris shier</em></div>
 <div class="modes" aria-label="rendering study">
   <button data-m="lines" class="on">1 · lines</button>
@@ -120,6 +120,7 @@
   <button data-m="rings">3 · rings</button>
   <button data-m="dust">4 · dust</button>
   <button data-m="cycle">5 · drift</button>
+  <button id="bubble-btn" class="on" aria-pressed="true">6 · bubbles</button>
 </div>
 
 <script>
@@ -127,7 +128,7 @@
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
   if (matchMedia('(hover: none)').matches){
-    document.getElementById('hint').textContent = 'touch the water · tap to drop a stone';
+    document.getElementById('hint').textContent = 'touch the water · tap to drop a stone · hold for bubbles';
   }
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = matchMedia('(hover: none)').matches || ('ontouchstart' in window);
@@ -176,9 +177,14 @@
   addEventListener('pointerdown', e => {
     if (e.target.closest('.modes') || e.target.closest('.back')) return;
     pointerMove(e.clientX, e.clientY);
-    ripples.push({ x:e.clientX, y:e.clientY, t:0 });
+    ripples.push({ x:e.clientX, y:e.clientY, t:0, amp:1 });
     if (ripples.length > 8) ripples.shift();
+    holding = { x:e.clientX, y:e.clientY, t0:performance.now() };   // keep holding to blow bubbles
   });
+  addEventListener('pointermove', e => { if (holding){ holding.x = e.clientX; holding.y = e.clientY; } });
+  const release = () => { holding = null; };
+  addEventListener('pointerup', release);
+  addEventListener('pointercancel', release);
   addEventListener('pointerleave', () => { mouse.in = false; mouse.x = mouse.y = -9999; });
 
   let hintFaded = false;
@@ -239,9 +245,9 @@
       const rp = ripples[k];
       rp.t += 0.016;
       const R = rp.t * 340 * SCALE;
-      const width = 60 * SCALE;
-      const decay = Math.exp(-rp.t * 1.4);
-      if (decay < 0.02){ ripples.splice(k, 1); continue; }
+      const width = 60 * SCALE * (rp.amp < 1 ? 0.6 : 1);
+      const decay = Math.exp(-rp.t * 1.4) * (rp.amp ?? 1);
+      if (decay < 0.02 * (rp.amp ?? 1)){ ripples.splice(k, 1); continue; }
       for (let r = 0; r < rows; r++){
         const y0 = marginY + r * ROW_GAP;
         const dy = y0 - rp.y;
@@ -268,8 +274,90 @@
       }
     }
 
+    stepBubbles();
+
     for (let i = 0; i < u.length; i++) u[i] += v[i];
     mouse.vx *= 0.6; mouse.vy *= 0.6;
+  }
+
+  // ======================================================================
+  // BUBBLES — rise through the water, bend the lines around them, and pop
+  // into a small ripple. A few drift up on their own; hold to blow a stream.
+  // ======================================================================
+  const bubbles = [];
+  let bubblesOn = true;
+  let holding = null;
+  const MAX_BUBBLES = isSmall ? 70 : 140;
+
+  function spawnBubble(x, y, size){
+    bubbles.push({
+      x, y,
+      r: size * SCALE,
+      vy: -(0.5 + Math.random() * 0.8),
+      ph: Math.random() * Math.PI * 2,
+      wob: 0.7 + Math.random() * 1.1,
+      popAt: Math.random() < 0.35 ? H * (0.08 + Math.random() * 0.55) : -40   // some pop mid-water
+    });
+    if (bubbles.length > MAX_BUBBLES) bubbles.shift();
+  }
+
+  function stepBubbles(){
+    if (!bubblesOn){ bubbles.length = 0; return; }
+    // ambient: an occasional bubble from the floor
+    if (!reduceMotion && Math.random() < (isSmall ? 0.035 : 0.06)) spawnBubble(Math.random() * W, H + 12, 3 + Math.random() * 5);
+    // held pointer: a stream after a short press
+    if (holding && performance.now() - holding.t0 > 220){
+      const n = Math.random() < 0.5 ? 2 : 1;
+      for (let k = 0; k < n; k++) spawnBubble(holding.x + (Math.random() - 0.5) * 18 * SCALE, holding.y + (Math.random() - 0.5) * 8, 2.5 + Math.random() * 6);
+    }
+
+    for (let k = bubbles.length - 1; k >= 0; k--){
+      const b = bubbles[k];
+      b.vy = Math.max(b.vy - 0.014, -3.4);                        // buoyancy: they speed up as they rise
+      b.y += b.vy;
+      b.x += Math.sin(t * b.wob * 3 + b.ph) * 0.45;               // side-to-side wobble
+      b.r *= 1.0012;                                              // expand a little as pressure drops
+      if (b.y < b.popAt){
+        ripples.push({ x:b.x, y:b.y, t:0, amp:0.3 });
+        if (ripples.length > 14) ripples.shift();
+        bubbles.splice(k, 1); continue;
+      }
+      // push the lines away from the bubble, like a lens moving through them
+      const reach = b.r * 5;
+      const r0 = Math.max(0, Math.floor((b.y - reach - marginY) / ROW_GAP));
+      const r1 = Math.min(rows - 1, Math.ceil((b.y + reach - marginY) / ROW_GAP));
+      const c0 = Math.max(0, Math.floor((b.x - reach) / COL_GAP));
+      const c1 = Math.min(cols - 1, Math.ceil((b.x + reach) / COL_GAP));
+      const reach2 = reach * reach;
+      for (let r = r0; r <= r1; r++){
+        const dy = marginY + r * ROW_GAP - b.y;
+        const dir = dy >= 0 ? 1 : -1;
+        for (let c = c0; c <= c1; c++){
+          const dx = c * COL_GAP - b.x;
+          const d2 = dx*dx + dy*dy;
+          if (d2 < reach2) v[r * cols + c] += dir * Math.exp(-d2 / (reach2 * 0.3)) * 0.22;
+        }
+      }
+    }
+  }
+
+  function drawBubbles(){
+    if (!bubbles.length) return;
+    const h = baseHue();
+    for (const b of bubbles){
+      const r = Math.max(1.5, b.r);
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${h + 25}, 70%, 70%, 0.06)`;
+      ctx.fill();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = `hsla(${h + 25}, 75%, 78%, 0.55)`;
+      ctx.stroke();
+      ctx.beginPath();                                            // little highlight
+      ctx.arc(b.x - r * 0.35, b.y - r * 0.35, r * 0.28, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(235,245,255,0.45)';
+      ctx.fill();
+    }
   }
 
   // bilinear sampling — lets any geometry read the water at any (x, y)
@@ -450,7 +538,7 @@
   }
 
   // ---------- mode switch ----------
-  const buttons = [...document.querySelectorAll('.modes button')];
+  const buttons = [...document.querySelectorAll('.modes button[data-m]')];
   function setStudy(name){
     study = name;
     if (name === 'cycle') cycleT = 0;
@@ -460,8 +548,17 @@
   addEventListener('keydown', e => {
     const map = { '1':'lines', '2':'weave', '3':'rings', '4':'dust', '5':'cycle' };
     if (map[e.key]) setStudy(map[e.key]);
+    if (e.key === '6' || e.key === 'b') toggleBubbles();
     if (e.key === 'Escape') location.href = 'index.html';
   });
+
+  const bubbleBtn = document.getElementById('bubble-btn');
+  function toggleBubbles(){
+    bubblesOn = !bubblesOn;
+    bubbleBtn.classList.toggle('on', bubblesOn);
+    bubbleBtn.setAttribute('aria-pressed', String(bubblesOn));
+  }
+  bubbleBtn.addEventListener('click', e => { e.stopPropagation(); toggleBubbles(); });
 
   // ---------- frame ----------
   function draw(){
@@ -473,6 +570,7 @@
     ctx.lineJoin = 'round';
 
     study === 'cycle' ? drawCycle() : studies[study]();
+    drawBubbles();
 
     if (mouse.in){
       const ch = baseHue();
