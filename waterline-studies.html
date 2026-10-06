@@ -524,7 +524,7 @@
         const y = y0 + u[i] * SCALE;
         // each bubble breathes small to large on its own slow cycle; the phase drifts across
         // the field so the swelling rolls through the sea instead of pulsing all at once
-        const breathe = BREATHE ? 0.2 + 1.9 * (0.5 + 0.5 * Math.sin(t * 1.1 + c * 0.11 + r * 0.17)) : 1;   // 20% → 210%
+        const breathe = BREATHE ? 0.5 + 3.5 * (0.5 + 0.5 * Math.sin(t * 1.1 + c * 0.11 + r * 0.17)) : 1;   // 50% → 400%
         const rad = baseR * (0.6 + e * 1.5) * breathe;
         const L = Math.min(LEVELS - 1, (e * LEVELS) | 0);
         rings[L].moveTo(x + rad, y);
