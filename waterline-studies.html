@@ -110,7 +110,7 @@
 <body>
 <a class="back" href="index.html" aria-label="Back to Tonso Trail">← back to the trail</a>
 <canvas id="c"></canvas>
-<div class="hint" id="hint">move through the water · click to drop a stone · hold to blow bubbles</div>
+<div class="hint" id="hint">move through the water · click to drop a stone</div>
 <div class="label" id="label">waterline · studies<em>after line05x5d · chris shier</em></div>
 <div class="modes" aria-label="rendering study">
   <button data-m="lines" class="on">1 · lines</button>
@@ -126,7 +126,7 @@
   const canvas = document.getElementById('c');
   const ctx = canvas.getContext('2d');
   if (matchMedia('(hover: none)').matches){
-    document.getElementById('hint').textContent = 'touch the water · tap to drop a stone · hold for bubbles';
+    document.getElementById('hint').textContent = 'touch the water · tap to drop a stone';
   }
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = matchMedia('(hover: none)').matches || ('ontouchstart' in window);
@@ -177,12 +177,7 @@
     pointerMove(e.clientX, e.clientY);
     ripples.push({ x:e.clientX, y:e.clientY, t:0, amp:1 });
     if (ripples.length > 8) ripples.shift();
-    holding = { x:e.clientX, y:e.clientY, t0:performance.now() };   // keep holding to blow bubbles
   });
-  addEventListener('pointermove', e => { if (holding){ holding.x = e.clientX; holding.y = e.clientY; } });
-  const release = () => { holding = null; };
-  addEventListener('pointerup', release);
-  addEventListener('pointercancel', release);
   addEventListener('pointerleave', () => { mouse.in = false; mouse.x = mouse.y = -9999; });
 
   let hintFaded = false;
@@ -280,10 +275,9 @@
 
   // ======================================================================
   // BUBBLES — rise through the water, bend the lines around them, and pop
-  // into a small ripple. A few drift up on their own; hold to blow a stream.
+  // into a small ripple. A few drift up on their own in the bubbles study.
   // ======================================================================
   const bubbles = [];
-  let holding = null;
   const MAX_BUBBLES = isSmall ? 70 : 140;
 
   function spawnBubble(x, y, size){
@@ -300,13 +294,8 @@
 
   function stepBubbles(){
     // ambient: an occasional bubble from the floor
-    // ambient risers belong to the bubbles study; holding blows a stream in any study
+    // ambient risers belong to the bubbles study
     if (study === 'bubbles' && !reduceMotion && Math.random() < (isSmall ? 0.05 : 0.09)) spawnBubble(Math.random() * W, H + 12, 3 + Math.random() * 5);
-    // held pointer: a stream after a short press
-    if (holding && performance.now() - holding.t0 > 220){
-      const n = Math.random() < 0.5 ? 2 : 1;
-      for (let k = 0; k < n; k++) spawnBubble(holding.x + (Math.random() - 0.5) * 18 * SCALE, holding.y + (Math.random() - 0.5) * 8, 2.5 + Math.random() * 6);
-    }
 
     for (let k = bubbles.length - 1; k >= 0; k--){
       const b = bubbles[k];
