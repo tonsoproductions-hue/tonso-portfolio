@@ -342,7 +342,7 @@
     if (!bubbles.length) return;
     const h = baseHue();
     for (const b of bubbles){
-      const r = Math.max(1.5, b.r * (reduceMotion ? 1 : 0.75 + 0.25 * Math.sin(t * 3.2 + b.ph)));
+      const r = Math.max(1.5, b.r * (reduceMotion ? 1 : 1 + 0.6 * Math.sin(t * 3.2 + b.ph)));
       ctx.beginPath();
       ctx.arc(b.x, b.y, r, 0, Math.PI * 2);
       ctx.fillStyle = `hsla(${h + 25}, 70%, 70%, 0.06)`;
@@ -524,7 +524,7 @@
         const y = y0 + u[i] * SCALE;
         // each bubble breathes small to large on its own slow cycle; the phase drifts across
         // the field so the swelling rolls through the sea instead of pulsing all at once
-        const breathe = BREATHE ? 0.55 + 0.9 * (0.5 + 0.5 * Math.sin(t * 1.1 + c * 0.11 + r * 0.17)) : 1;
+        const breathe = BREATHE ? 0.5 + 3.5 * (0.5 + 0.5 * Math.sin(t * 1.1 + c * 0.11 + r * 0.17)) : 1;   // 50% → 400%
         const rad = baseR * (0.6 + e * 1.5) * breathe;
         const L = Math.min(LEVELS - 1, (e * LEVELS) | 0);
         rings[L].moveTo(x + rad, y);
