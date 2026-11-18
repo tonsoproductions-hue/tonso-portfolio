@@ -83,6 +83,26 @@ body {
 .data .pill-dot { background: #378ADD; }
 .cs-tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.5rem; }
 .cs-tag { font-size: 12px; color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 4px 12px; }
+.rebuilt-label { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #3B6D11; background: #EAF3DE; border-radius: 4px; padding: 2px 7px; display: inline-block; margin-bottom: 8px; }
+.cs-phase-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 1.25rem 0 1.75rem; }
+.cs-phase { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 1rem 1.25rem; background: var(--color-background-primary); }
+.cs-phase-status { font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; border-radius: 4px; padding: 2px 7px; margin-bottom: 8px; }
+.status-live { background: #EAF3DE; color: #3B6D11; }
+.status-next { background: #F1EFE8; color: #5F5E5A; }
+.cs-phase-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.cs-phase-detail { font-size: 12px; font-weight: 300; color: var(--color-text-secondary); line-height: 1.5; }
+.cs-model { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 1.25rem 0 0.5rem; }
+.cs-model-node { font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: var(--border-radius-md); background: #E6F1FB; border: 0.5px solid #B5D4F4; color: #185FA5; }
+.cs-model-arrow { font-size: 12px; color: var(--color-text-tertiary); }
+.cs-model-note { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 1.75rem; }
+.cs-subhead { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin: 1.5rem 0 0.5rem; }
+@media (max-width: 640px) {
+  body { padding: 1.5rem 1rem; }
+  .cs-title { font-size: 30px; }
+  .cs-title br, .cs-tagline br { display: none; }
+  .cs-meta-grid, .cs-metrics, .cs-phase-row { grid-template-columns: 1fr; }
+  .cs-before-grid { grid-template-columns: 1fr; }
+}
 </style>
 <!-- Vercel Web Analytics -->
 <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
@@ -97,7 +117,7 @@ body {
 <div class="cs-wrap">
   <p class="cs-eyebrow">Case Study — Confidential Client</p>
   <h1 class="cs-title">From <em>Manual Everything</em><br>to a Connected Operations System</h1>
-  <p class="cs-tagline">Full-stack build-out connecting HoneyBook, Google Sheets, Zapier, Make.com,<br>and the Google Maps API into a unified operations backbone for an independent beauty brand.</p>
+  <p class="cs-tagline">An ongoing engagement with an independent beauty brand: first a HoneyBook client pipeline wired to Google Sheets, Zapier, Make.com and the Google Maps API,<br>then a rebuild of the whole booking-to-payout operation as a linked Airtable system.</p>
 
   <div class="cs-meta-grid">
     <div class="cs-meta-cell">
@@ -106,11 +126,11 @@ body {
     </div>
     <div class="cs-meta-cell">
       <p class="cs-meta-label">Engagement type</p>
-      <p class="cs-meta-value">Strategy + Full Build-Out</p>
+      <p class="cs-meta-value">Strategy + Full Build-Out · Dec 2025 – present</p>
     </div>
     <div class="cs-meta-cell">
       <p class="cs-meta-label">Focus areas</p>
-      <p class="cs-meta-value">CRM · Pipeline Design · Automation</p>
+      <p class="cs-meta-value">CRM · Automation · Data Architecture</p>
     </div>
   </div>
 
@@ -148,7 +168,7 @@ body {
 
   <hr class="cs-divider">
 
-  <p class="cs-section-label">The client journey we built</p>
+  <p class="cs-section-label">Phase 1 — The client journey we built</p>
   <p class="cs-body">
     A core deliverable was designing and implementing a <strong>seven-stage client pipeline in HoneyBook</strong> — the first structured customer journey this business had ever had. Each stage has defined triggers, automated actions, and clear handoff criteria so nothing gets lost and no client experiences an inconsistent process.
   </p>
@@ -219,7 +239,7 @@ body {
         <div class="stage-inner" style="background:#EAF3DE;border-color:#C0DD97;">
           <span class="stage-num">07</span>
           <span class="stage-name" style="color:#27500A;">Event Day</span>
-          <span class="stage-desc" style="color:#3B6D11;">Final payout triggered, contractor record updated in Sheets</span>
+          <span class="stage-desc" style="color:#3B6D11;">Final payout triggered, contractor record updated</span>
           <span class="stage-badge badge-crm">Complete</span>
         </div>
       </div>
@@ -234,25 +254,7 @@ body {
 
   <hr class="cs-divider">
 
-  <p class="cs-section-label">Tech stack</p>
-  <div class="cs-stack">
-    <span class="cs-stack-pill crm"><span class="pill-dot"></span>HoneyBook — CRM & pipeline</span>
-    <span class="cs-stack-pill data"><span class="pill-dot"></span>Google Sheets — contractor management</span>
-    <span class="cs-stack-pill auto"><span class="pill-dot"></span>Zapier — workflow automation</span>
-    <span class="cs-stack-pill auto"><span class="pill-dot"></span>Make.com — advanced automations</span>
-    <span class="cs-stack-pill data"><span class="pill-dot"></span>Google Maps API — location data</span>
-  </div>
-
-  <hr class="cs-divider">
-
-  <p class="cs-section-label">My role</p>
-  <p class="cs-body">
-    I led both the <strong>strategic recommendations</strong> and the <strong>complete technical build-out</strong>. This included designing the seven-stage client pipeline from scratch, configuring HoneyBook with custom templates and automated triggers at each stage, building the Google Sheets contractor system, and wiring the two platforms together via Zapier and Make.com. The Google Maps API integration replaced manual location matching for contractor assignments at the event checklist stage.
-  </p>
-
-  <hr class="cs-divider">
-
-  <p class="cs-section-label">What I built</p>
+  <p class="cs-section-label">What I built in Phase 1</p>
   <ul class="cs-deliverable-list">
     <li><span class="cs-dot"></span><span><strong>Seven-stage client pipeline</strong> — Designed and implemented the brand's first structured customer journey in HoneyBook, from initial onboarding through to event day, with defined triggers and automated handoffs at every stage.</span></li>
     <li><span class="cs-dot"></span><span><strong>HoneyBook CRM configuration</strong> — Custom pipelines, intake questionnaires, proposal templates, contracts, retainer invoices, and escrow-style trial payment flows tailored to the brand's booking model.</span></li>
@@ -264,9 +266,113 @@ body {
 
   <hr class="cs-divider">
 
+  <p class="cs-section-label">Phase 2 — Outgrowing the spreadsheet</p>
+  <p class="cs-body">
+    The first build worked, and the business grew into it. By mid-2026 one Google Sheet had quietly become the <strong>operating system for the entire business</strong>: booked jobs arriving from HoneyBook, artist assignments, per-artist rate cards, a payout calculation running across forty-plus columns, and a scripted contractor finder ranking artists by drive time. I audited it end to end and wrote up where the architecture was straining before proposing anything new.
+  </p>
+
+  <div class="cs-before-grid">
+    <div class="cs-before-card">
+      <span class="manual-label">Fragile</span>
+      <p class="cs-before-task">Records matched by name</p>
+      <p class="cs-before-detail">With no real row identity, a client who booked twice could point at the wrong job, and re-runs appended duplicate rows.</p>
+    </div>
+    <div class="cs-before-card">
+      <span class="manual-label">Fragile</span>
+      <p class="cs-before-task">Payout logic outgrew the grid</p>
+      <p class="cs-before-detail">Nine interacting payout rules lived in spilled formulas. Typing in the wrong cell broke a column, usually noticed after a payout was already wrong.</p>
+    </div>
+    <div class="cs-before-card">
+      <span class="manual-label">Fragile</span>
+      <p class="cs-before-task">Services stored as columns</p>
+      <p class="cs-before-detail">Adding a service meant a new column plus changes to the rate grid, the payout formula and every artist tab.</p>
+    </div>
+    <div class="cs-before-card">
+      <span class="manual-label">Fragile</span>
+      <p class="cs-before-task">No view per artist</p>
+      <p class="cs-before-detail">One job exploded into many rows, and sharing an artist's tab would expose every other artist's rates.</p>
+    </div>
+  </div>
+
+  <p class="cs-subhead">A phased plan the owner could stop after any step</p>
+  <p class="cs-body">
+    I wrote a <strong>statement of work for a three-phase migration to Airtable</strong>, sized in hours and weeks, with a sign-off checkpoint between phases, an explicit list of limitations, and a rule that every account sits in the client's name so there is no dependency on me to keep it running.
+  </p>
+
+  <div class="cs-phase-row">
+    <div class="cs-phase">
+      <span class="cs-phase-status status-live">Live</span>
+      <p class="cs-phase-name">1 · System of record</p>
+      <p class="cs-phase-detail">Linked tables for clients, projects, artists, services, rates, assignments and payouts, with the payout engine rebuilt rule by rule.</p>
+    </div>
+    <div class="cs-phase">
+      <span class="cs-phase-status status-live">Live</span>
+      <p class="cs-phase-name">2 · Automation</p>
+      <p class="cs-phase-detail">HoneyBook intake, automatic drive-time matching, staffing and travel-pay automations.</p>
+    </div>
+    <div class="cs-phase">
+      <span class="cs-phase-status status-next">Next</span>
+      <p class="cs-phase-name">3 · Contractor views</p>
+      <p class="cs-phase-detail">Private views where each artist sees only their own jobs and payouts.</p>
+    </div>
+  </div>
+
+  <p class="cs-subhead">The data model</p>
+  <p class="cs-body">
+    The most important change was structural: <strong>services became records instead of columns.</strong> Every planned service on a job is its own row, booked to one artist at that artist's rate for the event year, so adding an eighteenth service is data entry, not a rebuild, and changing a rate next year never rewrites last year's payouts.
+  </p>
+  <div class="cs-model" aria-label="Data flow from HoneyBook inquiry to artist payout">
+    <span class="cs-model-node">Inquiry</span><span class="cs-model-arrow">→</span>
+    <span class="cs-model-node">Client + Project</span><span class="cs-model-arrow">→</span>
+    <span class="cs-model-node">Planned services</span><span class="cs-model-arrow">→</span>
+    <span class="cs-model-node">Artist assignment</span><span class="cs-model-arrow">→</span>
+    <span class="cs-model-node">Line items + travel legs</span><span class="cs-model-arrow">→</span>
+    <span class="cs-model-node">Payout</span>
+  </div>
+  <p class="cs-model-note">Thirteen linked tables in total, including rates by artist and year, a distance matrix, and global settings for fees.</p>
+
+  <p class="cs-subhead">The automation layer</p>
+  <ul class="cs-deliverable-list">
+    <li><span class="cs-dot"></span><span><strong>HoneyBook intake</strong> — A Zapier zap lands each new HoneyBook project in an inquiries table. An automation finds or creates the client by email, creates or reuses the project by HoneyBook ID, and flips it to Booked when the client books, without ever overwriting what is already there.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Drive-time matching</strong> — When a venue address is entered or changed, one Google Distance Matrix call measures driving miles from every active artist, fills a ranked shortlist for that job, and skips placeholder addresses like "Studio" or "TBD".</span></li>
+    <li><span class="cs-dot"></span><span><strong>One-click staffing</strong> — Picking an artist on a planned service finds or creates her assignment, looks up her rate for that service and year, and creates the payout line item. If anything is missing it leaves a plain-language warning instead of a wrong number.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Travel pay that handles real weddings</strong> — Travel is built as one leg per address an artist covers, so a separate getting-ready location is paid correctly. A minimum travel fee, studio fees and early-bird fees come from one settings record.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Address-change recalculation</strong> — When an artist moves, one checkbox re-measures her miles on upcoming jobs, leaves anything already fully paid untouched, and writes a dated log of what changed.</span></li>
+    <li><span class="cs-dot"></span><span><strong>Split payments, tracked</strong> — Each assignment carries a payout percentage, first and second payments with dates and paid flags, adjustments with a reason, and a live amount owed.</span></li>
+  </ul>
+  <p class="cs-body">
+    A design rule runs through all of it: <strong>automations only write inputs, never a payout or revenue number.</strong> Every dollar figure is a formula the owner can inspect, which is what makes the system trustworthy enough to pay people from.
+  </p>
+
+  <p class="cs-subhead">Interfaces and migration</p>
+  <p class="cs-body">
+    The owner works from two Airtable interfaces: a staffing dashboard showing booked jobs, services still unstaffed, revenue, artist payouts, margin, and unpaid balances by artist, and a custom "assign and pay" desk. In October 2026 I migrated the sheet's full history into the new base, keeping each record's original sheet ID so every payout can be traced back and reconciled.
+  </p>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">Tech stack</p>
+  <div class="cs-stack">
+    <span class="cs-stack-pill crm"><span class="pill-dot"></span>HoneyBook — CRM & pipeline</span>
+    <span class="cs-stack-pill data"><span class="pill-dot"></span>Airtable — system of record, automations & interfaces</span>
+    <span class="cs-stack-pill data"><span class="pill-dot"></span>Google Sheets — Phase 1 contractor system</span>
+    <span class="cs-stack-pill auto"><span class="pill-dot"></span>Zapier — workflow automation</span>
+    <span class="cs-stack-pill auto"><span class="pill-dot"></span>Make.com — Phase 1 advanced automations</span>
+    <span class="cs-stack-pill data"><span class="pill-dot"></span>Google Distance Matrix API — drive-time matching</span>
+  </div>
+
+  <hr class="cs-divider">
+
+  <p class="cs-section-label">My role</p>
+  <p class="cs-body">
+    I lead both the <strong>strategic recommendations</strong> and the <strong>complete technical build-out</strong>, and I've stayed on as the business's operations partner as it grew. In Phase 1 I designed the seven-stage client pipeline from scratch, configured HoneyBook with custom templates and automated triggers, built the Google Sheets contractor system, and wired it together with Zapier, Make.com and the Google Maps API. In Phase 2 I audited that system, wrote the redesign brief and phased statement of work, designed the Airtable data model, wrote the scripted automations, built the owner's interfaces, and migrated the historical data.
+  </p>
+
+  <hr class="cs-divider">
+
   <p class="cs-section-label">Outcome</p>
   <p class="cs-body">
-    What had been a fully manual, process-free operation became a structured, largely automated one. Every client now moves through the same consistent journey — from first inquiry to event day — with automated touchpoints, payment milestones, and contractor assignments happening in the background. Payout disputes dropped to zero in the first billing cycle, manual data entry was eliminated, and the founder stopped spending her evenings reconciling records by hand. With real infrastructure in place for the first time, the business was ready to scale without scaling the chaos.
+    What had been a fully manual, process-free operation became a structured, largely automated one. Every client now moves through the same consistent journey, from first inquiry to event day, with automated touchpoints, payment milestones, and contractor assignments happening in the background. Payout disputes dropped to zero in the first billing cycle and the founder stopped spending her evenings reconciling records by hand. Phase 2 then replaced the spreadsheet that had become the business's single point of failure with a linked system where a booking, its artists, their travel and their pay all follow real relationships instead of cell references.
   </p>
 
   <div class="cs-metrics">
@@ -283,13 +389,30 @@ body {
       <p class="cs-metric-desc">Of manual data entry replaced by automation</p>
     </div>
   </div>
+  <div class="cs-metrics">
+    <div class="cs-metric">
+      <p class="cs-metric-num">230+</p>
+      <p class="cs-metric-desc">Projects moved into one linked Airtable base</p>
+    </div>
+    <div class="cs-metric">
+      <p class="cs-metric-num">12</p>
+      <p class="cs-metric-desc">Live automations, from intake to payout</p>
+    </div>
+    <div class="cs-metric">
+      <p class="cs-metric-num">17</p>
+      <p class="cs-metric-desc">Services turned from columns into records</p>
+    </div>
+  </div>
 
   <div class="cs-tag-row">
     <span class="cs-tag">HoneyBook</span>
+    <span class="cs-tag">Airtable</span>
     <span class="cs-tag">Google Sheets</span>
     <span class="cs-tag">Zapier</span>
     <span class="cs-tag">Make.com</span>
     <span class="cs-tag">Google Maps API</span>
+    <span class="cs-tag">Data modeling</span>
+    <span class="cs-tag">Data migration</span>
     <span class="cs-tag">Pipeline design</span>
     <span class="cs-tag">Customer journey</span>
     <span class="cs-tag">Workflow automation</span>
